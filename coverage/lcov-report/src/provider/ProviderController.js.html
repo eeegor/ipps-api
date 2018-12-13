@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/provider/ProviderController.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/provider</a> ProviderController.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">51.85% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>28/54</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">38.89% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>14/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>9/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">48% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>24/50</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import Provider from './Provider';
+import { queryNumberMinMax, queryString } from '../util';
+&nbsp;
+export const pageNumber = req =&gt; {
+  const isNumber = parseInt(req.query.page, 10);
+  const validPageNumber = isNumber &amp;&amp; isNumber &gt; 0 ? isNumber : 1;
+  return validPageNumber;
+};
+&nbsp;
+export const limit = req =&gt; {
+  const isNumber = parseInt(req.query.per_page, 10);
+  const perPage = parseInt(process.env.PER_PAGE, 10) || 100;
+  const validLimit = (isNumber &amp;&amp; isNumber &gt; 0 &amp;&amp; isNumber) || perPage;
+  return validLimit;
+};
+&nbsp;
+export const paginationQuery = req =&gt; ({
+  skip: pageNumber(req),
+  limit: limit(req)
+});
+&nbsp;
+export const responsePagination = req =&gt; ({
+  page: pageNumber(req),
+  perPage: limit(req)
+});
+&nbsp;
+export const needsCache = req =&gt;
+  // eslint-disable-next-line no-unneeded-ternary
+  req.query.cache === 'false' || req.query.cache === false ? false : true;
+&nbsp;
+export const setResponseHeadersDbEngine = <span class="fstat-no" title="function not covered" >(r</span>es, engine) =&gt; {
+<span class="cstat-no" title="statement not covered" >  res.setHeader('X-db-engine', engine);</span>
+};
+&nbsp;
+export const unwrapJson = json =&gt; JSON.parse(JSON.stringify(json));
+&nbsp;
+export const transformResponse = providers =&gt;
+  providers.map(provider =&gt; {
+    const item = unwrapJson(provider);
+    const hospitalDesc = item.hospitalReferralRegionDescription.split(' - ');
+    return {
+      'Provider Name': item.providerName.toUpperCase(),
+      'Provider Street Address': item.providerStreetAddress.toUpperCase(),
+      'Provider City': item.providerCity.toUpperCase(),
+      'Provider State': item.providerState.toUpperCase(),
+      'Provider Zip Code': parseInt(item.providerZipCode, 10),
+      'Hospital Referral Region Description': `${hospitalDesc[0].toUpperCase()} - ${hospitalDesc[1]}`,
+      'Total Discharges': parseInt(item.totalDischarges, 10),
+      'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString()}`,
+      'Average Total Payments': `$${item.averageTotalPayments.toLocaleString()}`,
+      'Average Medicare Payments': `$${item.averageMedicarePayments.toLocaleString()}`
+    };
+  });
+&nbsp;
+export const requestParams = req =&gt; ({
+  ...queryNumberMinMax('totalDischarges', req.query.min_discharges, req.query.max_discharges),
+  ...queryNumberMinMax(
+    'averageCoveredCharges',
+    req.query.min_average_covered_charges,
+    req.query.max_average_covered_charges
+  ),
+  ...queryNumberMinMax(
+    'averageMedicarePayments',
+    req.query.min_average_medicare_payments,
+    req.query.max_average_medicare_payments
+  ),
+  ...queryString('providerState', req.query.state)
+});
+&nbsp;
+export const getFromMongo = <span class="fstat-no" title="function not covered" >(r</span>eq, res, redis) =&gt; {
+<span class="cstat-no" title="statement not covered" >  Provider.find(requestParams(req), { _id: 0 }, paginationQuery(req), <span class="fstat-no" title="function not covered" >(e</span>rror, providers) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (error || !providers || providers === null || providers === undefined) {</span>
+<span class="cstat-no" title="statement not covered" >      return res.status(201).json({</span>
+        info: "Can't get providers",
+        error
+      });
+    }
+<span class="cstat-no" title="statement not covered" >    if (needsCache(req) === true) {</span>
+<span class="cstat-no" title="statement not covered" >      redis.setex(req.originalUrl, 10, JSON.stringify(transformResponse(providers)), <span class="fstat-no" title="function not covered" >re</span>disSetError =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (redisSetError || !providers || providers === null) {</span>
+<span class="cstat-no" title="statement not covered" >          return res.status(404).json({</span>
+            info: 'Redis data could not be saved',
+            error: redisSetError
+          });
+        }
+<span class="cstat-no" title="statement not covered" >        return true;</span>
+      });
+    }
+<span class="cstat-no" title="statement not covered" >    setResponseHeadersDbEngine(res, 'mongo');</span>
+<span class="cstat-no" title="statement not covered" >    return res.status(200).json(transformResponse(providers));</span>
+  });
+};
+&nbsp;
+export const paginationHeaders = <span class="fstat-no" title="function not covered" >(r</span>eq, res, next) =&gt; {
+<span class="cstat-no" title="statement not covered" >  res.setHeader('X-current-page', responsePagination(req).page);</span>
+<span class="cstat-no" title="statement not covered" >  res.setHeader('X-current-page-limit', responsePagination(req).perPage);</span>
+<span class="cstat-no" title="statement not covered" >  Provider.countDocuments(<span class="fstat-no" title="function not covered" >(e</span>rror, count) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!error) {</span>
+<span class="cstat-no" title="statement not covered" >      res.setHeader('X-total-count', count);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    next();</span>
+  });
+};
+&nbsp;
+export const ProviderController = <span class="fstat-no" title="function not covered" >(a</span>pp, redis) =&gt; {
+<span class="cstat-no" title="statement not covered" >  app.use(paginationHeaders);</span>
+<span class="cstat-no" title="statement not covered" >  app.get('/providers', <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (needsCache(req) === false) {</span>
+<span class="cstat-no" title="statement not covered" >      return getFromMongo(req, res, redis);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return redis.get(req.originalUrl, <span class="fstat-no" title="function not covered" >(e</span>rror, cached) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (error || !cached || cached === null) {</span>
+<span class="cstat-no" title="statement not covered" >        return getFromMongo(req, res, redis);</span>
+      }
+<span class="cstat-no" title="statement not covered" >      setResponseHeadersDbEngine(res, 'redis');</span>
+<span class="cstat-no" title="statement not covered" >      return res.status(200).json(JSON.parse(cached));</span>
+    });
+  });
+};
+&nbsp;
+export default ProviderController;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Dec 13 2018 09:25:20 GMT+0100 (Central European Standard Time)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
