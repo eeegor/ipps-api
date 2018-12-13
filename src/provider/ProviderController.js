@@ -8,7 +8,8 @@ const pageNumber = req => {
 
 const limit = req => {
   const isNumber = parseInt(req.query.per_page, 10);
-  const validLimit = (isNumber && isNumber > 0 && isNumber) || parseInt(process.env.PER_PAGE, 10) || 100;
+  const perPage = parseInt(process.env.PER_PAGE, 10);
+  const validLimit = (isNumber && isNumber > 0 && isNumber) || perPage || 100;
   return validLimit;
 };
 
@@ -22,14 +23,36 @@ const responsePagination = req => ({
   perPage: limit(req)
 });
 
-const needsCache = req => (req.query.cache && req.query.cache === 'false' ? false : true);
+const needsCache = req =>
+  // eslint-disable-next-line no-unneeded-ternary
+  req.query.cache && req.query.cache === 'false' ? false : true;
 
-function setResponseHeaders(res, engine) {
+function setResponseHeadersDbEngine(res, engine) {
   res.setHeader('X-db-engine', engine);
 }
 
+const unwrapJson = json => JSON.parse(JSON.stringify(json));
+
+const transformResponse = providers =>
+  providers.map(provider => {
+    const item = unwrapJson(provider);
+    const hospitalDesc = item.hospitalReferralRegionDescription.split(' - ');
+    return {
+      'Provider Name': item.providerName,
+      'Provider Street Address': item.providerStreetAddress,
+      'Provider City': item.providerCity,
+      'Provider State': item.providerState.toUpperCase(),
+      'Provider Zip Code': item.providerZipCode,
+      'Hospital Referral Region Description': `${hospitalDesc[0].toUpperCase()} - ${hospitalDesc[1]}`,
+      'Total Discharges': item.totalDischarges,
+      'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString()}`,
+      'Average Total Payments': `$${item.averageTotalPayments.toLocaleString()}`,
+      'Average Medicare Payments': `$${item.averageMedicarePayments.toLocaleString()}`
+    };
+  });
+
 function getFromMongo(req, res, redis) {
-  Provider.find({}, {}, paginationQuery(req), (error, providers) => {
+  Provider.find({}, { _id: 0 }, paginationQuery(req), (error, providers) => {
     if (error || !providers || providers === null || providers === undefined) {
       return res.status(201).json({
         info: "Can't get providers",
@@ -37,43 +60,43 @@ function getFromMongo(req, res, redis) {
       });
     }
     if (needsCache(req) === true) {
-      redis.setex(req.originalUrl, 10, JSON.stringify(providers), error => {
-        if (error || !providers || providers === null) {
+      redis.setex(req.originalUrl, 10, JSON.stringify(transformResponse(providers)), redisSetError => {
+        if (redisSetError || !providers || providers === null) {
           return res.status(404).json({
             info: 'Redis data could not be saved',
-            error
+            error: redisSetError
           });
         }
+        return true;
       });
     }
-    setResponseHeaders(res, 'mongo');
-    return res.status(200).json(providers);
+    setResponseHeadersDbEngine(res, 'mongo');
+    return res.status(200).json(transformResponse(providers));
   });
 }
 
-const countDocuments = (req, res, next) => {
+const paginationHeaders = (req, res, next) => {
   res.setHeader('X-current-page', responsePagination(req).page);
   res.setHeader('X-current-page-limit', responsePagination(req).perPage);
-  res.setHeader('X-powered-by', 'Berlin');
   Provider.countDocuments((error, count) => {
     if (!error) {
       res.setHeader('X-total-count', count);
     }
     next();
   });
-}
+};
 
 function ProviderController(app, redis) {
-  app.use(countDocuments);
+  app.use(paginationHeaders);
   app.get('/providers', (req, res) => {
     if (needsCache(req) === false) {
       return getFromMongo(req, res, redis);
     }
-    redis.get(req.originalUrl, (error, cached) => {
+    return redis.get(req.originalUrl, (error, cached) => {
       if (error || !cached || cached === null) {
         return getFromMongo(req, res, redis);
       }
-      setResponseHeaders(res, 'redis');
+      setResponseHeadersDbEngine(res, 'redis');
       return res.status(200).json(JSON.parse(cached));
     });
   });
