@@ -1,13 +1,19 @@
 {
-  "version": 2,
-  "name": "api-ipps",
-  "env": {
-        "PORT": "3000"
-  },
-  "builds": [
-      { "src": "dist/index.js", "use": "@now/node-server" }
-  ],
-  "routes": [
-      { "src": "/(.*)", "dest": "/dist/index.js" }
-  ]
-}
+    "version": 2,
+    "name": "api-ipps",
+    "env": {
+          "PORT": "3000",
+          "PER_PAGE": "100",
+          "MONGO_DB": "mongodb://{mongo-username}:{mongo-password}@{mongo-host}:{mongo-port}/{mongo-database}",
+          "REDIS_PORT": "{redis-port}",
+          "REDIS_HOST": "{redis-host}",
+          "REDIS_AUTH_PASS": "{redis-auth-pass}"
+    },
+    "builds": [
+        { "src": "dist/index.js", "use": "@now/node-server" }
+    ],
+    "routes": [
+        { "src": "/(.*)", "dest": "/dist/index.js" }
+    ]
+  }
+  
