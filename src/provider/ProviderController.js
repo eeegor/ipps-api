@@ -76,15 +76,20 @@ export const getFromMongo = (req, res, redis) => {
       });
     }
     if (needsCache(req) === true) {
-      redis.setex(req.originalUrl, 10, JSON.stringify(transformResponse(providers)), redisSetError => {
-        if (redisSetError || !providers || providers === null) {
-          return res.status(404).json({
-            info: 'Redis data could not be saved',
-            error: redisSetError
-          });
+      redis.setex(
+        req.originalUrl,
+        process.env.REDIS_TTL || 3600,
+        JSON.stringify(transformResponse(providers)),
+        redisSetError => {
+          if (redisSetError || !providers || providers === null) {
+            return res.status(404).json({
+              info: 'Redis data could not be saved',
+              error: redisSetError
+            });
+          }
+          return true;
         }
-        return true;
-      });
+      );
     }
     setResponseHeadersDbEngine(res, 'mongo');
     return res.status(200).json(transformResponse(providers));

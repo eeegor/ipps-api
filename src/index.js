@@ -2,12 +2,37 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import initRedis from 'redis';
+import cors from 'cors';
+import compression from 'compression';
 import provider from './provider/ProviderController';
 
 require('dotenv').config();
 
 const port = process.env.PORT || 3000;
+const whitelist = process.env.CORS_WHITELIST.split(',').map(w => w.trim()) || [];
+const corsOptions = {
+  origin: (origin, callback) => {
+    // console.log('origin', origin);
+    // console.log('whitelist', whitelist);
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
 const app = express();
+
+app.use((req, res, next) => {
+  req.headers.origin = req.headers.origin || req.headers.host;
+  next();
+});
+app.use(cors(corsOptions));
+app.options('*', cors());
+
+const shouldCompress = (req, res) => (req.headers['x-no-compression'] ? false : compression.filter(req, res));
+app.use(compression({ filter: shouldCompress }));
 
 mongoose.connect(
   process.env.MONGO_DB,
