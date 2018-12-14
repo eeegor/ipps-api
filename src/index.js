@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import initRedis from 'redis';
 import cors from 'cors';
 import compression from 'compression';
+import user from './user/UserController';
 import provider from './provider/ProviderController';
 
 require('dotenv').config();
@@ -57,6 +58,7 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
+export const users = user(app, redis);
 export const providers = provider(app, redis);
 
 const server = app.listen(port, () => {

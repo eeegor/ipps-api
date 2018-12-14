@@ -56,9 +56,11 @@
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "mongoose": "^5.3.16",
     "pm2": "^3.2.3",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "validator": "^10.9.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
