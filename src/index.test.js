@@ -4,14 +4,12 @@ import {
   providers,
   populateProviders
 } from './__tests__/seed/seed';
-import server from './index';
 
-import expect from 'expect';
 import request from 'supertest';
 import app from './index';
 
-// beforeEach(populateUsers);
-// beforeEach(populateProviders);
+beforeEach(populateUsers);
+beforeEach(populateProviders);
 
 describe('GET /', () => {
   it('should show root path', done => {
