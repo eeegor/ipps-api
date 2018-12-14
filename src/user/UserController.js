@@ -1,7 +1,8 @@
-import User from './User';
 import { pick } from 'lodash';
+import { authenticate } from '../middleware';
+import User from './User';
 
-export const UserController = (app, redis) => {
+const UserController = app => {
   app.post('/users', (req, res) => {
     const body = pick(req.body, ['email', 'password']);
     const user = new User({ ...body });
@@ -14,20 +15,8 @@ export const UserController = (app, redis) => {
       });
   });
 
-  app.get('/profile', (req, res) => {
-    const token = req.header('x-auth');
-    User.findByToken(token)
-      .then(user => {
-        if (!user) {
-          return res.status(404).send({
-            error: 'User not found...'
-          });
-        }
-        return res.send(user);
-      })
-      .catch(error => {
-        return res.status(401).send(error);
-      });
+  app.get('/profile', authenticate, (req, res) => {
+    res.send(req.user);
   });
 };
 

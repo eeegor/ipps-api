@@ -41,7 +41,8 @@
         "error",
         {
           "allow": [
-            "_doc"
+            "_doc",
+            "_id"
           ]
         }
       ],
