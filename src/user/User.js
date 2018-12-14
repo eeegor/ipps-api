@@ -3,6 +3,8 @@ import validator from 'validator';
 import jwt from 'jsonwebtoken';
 import { pick } from 'lodash';
 
+const USERS_SALT = 'salted-hash-goes-here';
+
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -40,6 +42,21 @@ UserSchema.methods.toJSON = function() {
   return pick(userObject, ['_id', 'email']);
 };
 
+UserSchema.statics.findByToken = function(token) {
+  const User = this;
+  let decoded;
+  try {
+    decoded = jwt.verify(token, USERS_SALT);
+  } catch (error) {
+    return Promise.reject('Token is missing or does not match');
+  }
+  return User.findByToken({
+    _id: decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+};
+
 UserSchema.methods.generateAuthToken = function() {
   const user = this;
   const access = 'auth';
@@ -49,7 +66,7 @@ UserSchema.methods.generateAuthToken = function() {
         _id: user._id.toHexString(),
         access
       },
-      'salted-hash-goes-here'
+      USERS_SALT
     )
     .toString();
 
