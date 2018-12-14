@@ -13,5 +13,4 @@ const ProviderSchema = new mongoose.Schema({
   averageMedicarePayments: Number
 });
 
-const Provider = mongoose.model('Provider', ProviderSchema);
-export default Provider;
+export const Provider = mongoose.model('Provider', ProviderSchema);

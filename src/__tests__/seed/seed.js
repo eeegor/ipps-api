@@ -1,9 +1,7 @@
 import { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import User from '../../user/User';
-import Provider from '../../provider/Provider';
-
-const USERS_SECRET = process.env.USERS_SECRET || 'rombomatic-random-string-2323lknjk432k3';
+import { User, USERS_SECRET } from '../../user/User';
+import { Provider } from '../../provider/Provider';
 
 const user1id = new Types.ObjectId();
 const user2id = new Types.ObjectId();
@@ -35,12 +33,8 @@ const users = [
 const populateUsers = done => {
   User.deleteMany()
     .then(() => {
-      const goodUser = new User(users[0])
-        .save()
-        .then((data, error) => console.log(error));
-      const badUser = new User(users[1])
-        .save()
-        .then((data, error) => console.log(error));;
+      const goodUser = new User(users[0]).save();
+      const badUser = new User(users[1]).save();
       return Promise.all([goodUser, badUser]);
     })
     .then(() => done());

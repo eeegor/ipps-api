@@ -36,7 +36,7 @@ const corsOptions = {
 
 const app = express();
 
-if (env !== 'test') {
+if (env !== 'test' || env !== 'development') {
   app.use((req, res, next) => {
     req.headers.origin = req.headers.origin || req.headers.host;
     next();

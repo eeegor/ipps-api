@@ -1,3 +1,4 @@
+import expect from 'expect';
 import {
   users,
   populateUsers,
@@ -22,6 +23,18 @@ describe('GET /', () => {
 });
 
 describe('GET /profile', () => {
+  it('should return profile for logged in user', done => {
+    request(app)
+      .get('/profile')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.id).toBe(users[0]._id.toHexString())
+        expect(res.body.email).toBe(users[0].email)
+      })
+      .end((err) => done(err && err));
+  });
+
   it('should return 401 for logged out visitors', done => {
     request(app)
       .get('/profile')
@@ -31,10 +44,10 @@ describe('GET /profile', () => {
 });
 
 describe('GET /providers', () => {
-  it('should redirect logged out users to login / signup page', done => {
+  it('should show list of providers', done => {
     request(app)
       .get('/providers')
-      .expect(401)
+      .expect(200)
       .end((err) => done(err && err));
   });
 });

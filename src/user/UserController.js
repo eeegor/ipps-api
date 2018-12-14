@@ -1,6 +1,6 @@
 import { pick } from 'lodash';
 import { authenticate } from '../middleware';
-import User from './User';
+import { User } from './User';
 
 const UserController = app => {
   app.post('/users', (req, res) => {

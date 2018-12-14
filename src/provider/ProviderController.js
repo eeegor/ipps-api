@@ -1,4 +1,4 @@
-import Provider from './Provider';
+import { Provider } from './Provider';
 import { queryNumberMinMax, queryString } from '../util';
 import { authenticate } from '../middleware';
 
@@ -130,7 +130,7 @@ export const paginationHeaders = (req, res, next) => {
 
 export const ProviderController = (app, redis) => {
   app.use(paginationHeaders);
-  app.get('/providers', authenticate, (req, res) =>
+  app.get('/providers', (req, res) =>
     needsCache(req) === false
       ? getFromMongo(req, res, redis)
       : getFromRedis(req, res, redis)
