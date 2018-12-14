@@ -29,7 +29,8 @@ export const queryNumberMinMax = (doc, minParam, maxParam) => {
 
 export const queryString = (doc, param) => {
   const value = param && param !== '' && param;
-  const isString = value && typeof value === 'string' && value.toLocaleLowerCase();
+  const isString =
+    value && typeof value === 'string' && value.toLocaleLowerCase();
   const docIsValid = doc && doc !== '';
   if (isString && docIsValid) {
     return {

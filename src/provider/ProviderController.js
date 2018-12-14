@@ -41,7 +41,9 @@ export const transformResponse = providers =>
       'Provider City': item.providerCity.toUpperCase(),
       'Provider State': item.providerState.toUpperCase(),
       'Provider Zip Code': parseInt(item.providerZipCode, 10),
-      'Hospital Referral Region Description': `${hospitalDesc[0].toUpperCase()} - ${hospitalDesc[1]}`,
+      'Hospital Referral Region Description': `${hospitalDesc[0].toUpperCase()} - ${
+        hospitalDesc[1]
+      }`,
       'Total Discharges': parseInt(item.totalDischarges, 10),
       'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString()}`,
       'Average Total Payments': `$${item.averageTotalPayments.toLocaleString()}`,
@@ -50,7 +52,11 @@ export const transformResponse = providers =>
   });
 
 export const requestParams = req => ({
-  ...queryNumberMinMax('totalDischarges', req.query.min_discharges, req.query.max_discharges),
+  ...queryNumberMinMax(
+    'totalDischarges',
+    req.query.min_discharges,
+    req.query.max_discharges
+  ),
   ...queryNumberMinMax(
     'averageCoveredCharges',
     req.query.min_average_covered_charges,
@@ -124,7 +130,9 @@ export const paginationHeaders = (req, res, next) => {
 export const ProviderController = (app, redis) => {
   app.use(paginationHeaders);
   app.get('/providers', (req, res) =>
-    needsCache(req) === false ? getFromMongo(req, res, redis) : getFromRedis(req, res, redis)
+    needsCache(req) === false
+      ? getFromMongo(req, res, redis)
+      : getFromRedis(req, res, redis)
   );
 };
 

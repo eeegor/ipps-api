@@ -25,7 +25,8 @@ describe('transformResponse', () => {
         'Provider City': item.providerCity.toUpperCase(),
         'Provider State': item.providerState.toUpperCase(),
         'Provider Zip Code': parseInt(item.providerZipCode, 10),
-        'Hospital Referral Region Description': item.hospitalReferralRegionDescription,
+        'Hospital Referral Region Description':
+          item.hospitalReferralRegionDescription,
         'Total Discharges': parseInt(item.totalDischarges, 10),
         'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString()}`,
         'Average Total Payments': `$${item.averageTotalPayments.toLocaleString()}`,
