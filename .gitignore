@@ -3,3 +3,5 @@ now.json
 node_modules
 data
 dist
+coverage
+.nyc_output

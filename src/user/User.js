@@ -3,7 +3,7 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const USERS_SALT = 'salted-hash-goes-here';
+export const USERS_SECRET = process.env.X_USERS_SECRET || 'secret-string-in-case-no-one-is-defined';
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -50,7 +50,7 @@ UserSchema.statics.findByToken = function findByToken(token) {
   const User = this;
   let decoded;
   try {
-    decoded = jwt.verify(token, USERS_SALT);
+    decoded = jwt.verify(token, USERS_SECRET);
   } catch (error) {
     return Promise.reject(error);
   }
@@ -66,7 +66,7 @@ UserSchema.methods.generateAuthToken = function generateAuthToken() {
   const user = this;
   const access = 'auth';
   const token = jwt
-    .sign({ _id: user._id.toHexString(), access }, USERS_SALT)
+    .sign({ _id: user._id.toHexString(), access }, USERS_SECRET)
     .toString();
 
   user.tokens = user.tokens.concat([{ access, token }]);

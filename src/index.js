@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
@@ -7,15 +8,24 @@ import compression from 'compression';
 import user from './user/UserController';
 import provider from './provider/ProviderController';
 
-require('dotenv').config();
+const env = process.env.NODE_ENV || 'development';
+
+console.log('***** env *****', env);
+if (env === 'development') {
+  console.log('Using DB:', process.env.MONGO_DB);
+} else if (env === 'test') {
+  console.log('** SWITCH DB FOR TEST ***');
+  process.env.PORT = 30023;
+  process.env.MONGO_DB = process.env.MONGO_DB_TEST;
+  console.log('Using DB:', process.env.MONGO_DB);
+}
 
 const port = process.env.PORT || 3000;
+
 const whitelist =
   process.env.CORS_WHITELIST.split(',').map(w => w.trim()) || [];
 const corsOptions = {
   origin: (origin, callback) => {
-    // console.log('origin', origin);
-    // console.log('whitelist', whitelist);
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -26,20 +36,22 @@ const corsOptions = {
 
 const app = express();
 
-app.use((req, res, next) => {
-  req.headers.origin = req.headers.origin || req.headers.host;
-  next();
-});
-app.use(cors(corsOptions));
-app.options('*', cors());
+if (env !== 'test') {
+  app.use((req, res, next) => {
+    req.headers.origin = req.headers.origin || req.headers.host;
+    next();
+  });
+  app.use(cors(corsOptions));
+  app.options('*', cors());
+}
 
 const shouldCompress = (req, res) =>
   req.headers['x-no-compression'] ? false : compression.filter(req, res);
 app.use(compression({ filter: shouldCompress }));
 
 mongoose.Promise = global.Promise;
-mongoose.connect(
-  process.env.MONGO_DB,
+mongoose.set('useCreateIndex', true);
+mongoose.connect(process.env.MONGO_DB,
   {
     useNewUrlParser: true
   }
@@ -61,7 +73,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send('Ipps Patients Data Api');
 });
 
 export const users = user(app, redis);
