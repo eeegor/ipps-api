@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const USERS_SALT = 'salted-hash-goes-here';
@@ -35,18 +36,17 @@ const UserSchema = new mongoose.Schema({
   ]
 });
 
-// eslint-disable-next-line func-names
-UserSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function toJSON() {
   const user = this;
   const userObject = user.toObject();
   return {
     id: userObject._id,
-    email: userObject.email
+    email: userObject.email,
+    password: userObject.password
   };
 };
 
-// eslint-disable-next-line func-names
-UserSchema.statics.findByToken = function(token) {
+UserSchema.statics.findByToken = function findByToken(token) {
   const User = this;
   let decoded;
   try {
@@ -62,8 +62,7 @@ UserSchema.statics.findByToken = function(token) {
   return result;
 };
 
-// eslint-disable-next-line func-names
-UserSchema.methods.generateAuthToken = function() {
+UserSchema.methods.generateAuthToken = function generateAuthToken() {
   const user = this;
   const access = 'auth';
   const token = jwt
@@ -73,6 +72,28 @@ UserSchema.methods.generateAuthToken = function() {
   user.tokens = user.tokens.concat([{ access, token }]);
   return user.save().then(() => token);
 };
+
+// eslint-disable-next-line consistent-return
+UserSchema.pre('save', function preSave(next) {
+  const user = this;
+
+  if (user.isModified('password')) {
+    bcrypt.genSalt(10, (saltError, salt) => {
+      if (saltError) {
+        Promise.reject(saltError);
+      }
+      bcrypt.hash(user.password, salt, (hashError, hash) => {
+        if (hashError) {
+          Promise.reject(hashError);
+        }
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    return next();
+  }
+});
 
 const User = mongoose.model('User', UserSchema);
 
