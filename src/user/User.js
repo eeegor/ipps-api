@@ -3,7 +3,8 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export const USERS_SECRET = process.env.X_USERS_SECRET || 'secret-string-in-case-no-one-is-defined';
+export const USERS_SECRET =
+  process.env.USERS_SECRET || 'replace-this-secret-string-in-case-no-one-is-defined';
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -96,4 +97,3 @@ UserSchema.pre('save', function preSave(next) {
 });
 
 export const User = mongoose.model('User', UserSchema);
-

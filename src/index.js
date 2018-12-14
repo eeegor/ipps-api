@@ -51,7 +51,8 @@ app.use(compression({ filter: shouldCompress }));
 
 mongoose.Promise = global.Promise;
 mongoose.set('useCreateIndex', true);
-mongoose.connect(process.env.MONGO_DB,
+mongoose.connect(
+  process.env.MONGO_DB,
   {
     useNewUrlParser: true
   }

@@ -9,14 +9,17 @@ const UserController = app => {
     user
       .save()
       .then(() => user.generateAuthToken())
-      .then(token => res.header('x-auth', token).send(user))
+      .then(token => {
+        res.header('x-auth', token);
+        res.status(201).send(user);
+      })
       .catch(error => {
         res.status(400).send(error);
       });
   });
 
   app.get('/profile', authenticate, (req, res) => {
-    res.send(req.user);
+    res.status(200).send(req.user);
   });
 };
 

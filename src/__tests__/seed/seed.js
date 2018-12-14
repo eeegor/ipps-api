@@ -15,10 +15,7 @@ const users = [
       {
         access: 'auth',
         token: jwt
-          .sign(
-            { _id: user1id, access: 'auth' },
-            USERS_SECRET
-          )
+          .sign({ _id: user1id, access: 'auth' }, USERS_SECRET)
           .toString()
       }
     ]
