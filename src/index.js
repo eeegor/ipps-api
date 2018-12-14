@@ -34,6 +34,7 @@ app.options('*', cors());
 const shouldCompress = (req, res) => (req.headers['x-no-compression'] ? false : compression.filter(req, res));
 app.use(compression({ filter: shouldCompress }));
 
+mongoose.Promise = global.Promise;
 mongoose.connect(
   process.env.MONGO_DB,
   {

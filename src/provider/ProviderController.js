@@ -32,11 +32,8 @@ export const setResponseHeadersDbEngine = (res, engine) => {
   res.setHeader('X-db-engine', engine);
 };
 
-export const unwrapJson = json => JSON.parse(JSON.stringify(json));
-
 export const transformResponse = providers =>
-  providers.map(provider => {
-    const item = unwrapJson(provider);
+  providers.map(item => {
     const hospitalDesc = item.hospitalReferralRegionDescription.split(' - ');
     return {
       'Provider Name': item.providerName.toUpperCase(),
@@ -67,32 +64,49 @@ export const requestParams = req => ({
   ...queryString('providerState', req.query.state)
 });
 
+export const setRedis = (req, res, redis, providers) => {
+  redis.setex(
+    req.originalUrl,
+    process.env.REDIS_TTL || 3600,
+    JSON.stringify(transformResponse(providers)),
+    redisSetError => {
+      if (redisSetError || !providers || providers === null) {
+        return res.status(404).json({
+          info: 'Redis data could not be saved',
+          error: redisSetError
+        });
+      }
+      return true;
+    }
+  );
+};
+
 export const getFromMongo = (req, res, redis) => {
-  Provider.find(requestParams(req), { _id: 0 }, paginationQuery(req), (error, providers) => {
-    if (error || !providers || providers === null || providers === undefined) {
-      return res.status(201).json({
-        info: "Can't get providers",
-        error
-      });
-    }
-    if (needsCache(req) === true) {
-      redis.setex(
-        req.originalUrl,
-        process.env.REDIS_TTL || 3600,
-        JSON.stringify(transformResponse(providers)),
-        redisSetError => {
-          if (redisSetError || !providers || providers === null) {
-            return res.status(404).json({
-              info: 'Redis data could not be saved',
-              error: redisSetError
-            });
-          }
-          return true;
+  Provider.find(requestParams(req), { _id: 0 }, paginationQuery(req))
+    .lean()
+    .then(
+      providers => {
+        if (needsCache(req) === true) {
+          setRedis(req, res, redis, providers);
         }
-      );
+        setResponseHeadersDbEngine(res, 'mongo');
+        return res.status(200).json(transformResponse(providers));
+      },
+      error =>
+        res.json({
+          info: "Can't get providers",
+          error
+        })
+    );
+};
+
+export const getFromRedis = (req, res, redis) => {
+  redis.get(req.originalUrl, (error, cached) => {
+    if (error || !cached || cached === null) {
+      return getFromMongo(req, res, redis);
     }
-    setResponseHeadersDbEngine(res, 'mongo');
-    return res.status(200).json(transformResponse(providers));
+    setResponseHeadersDbEngine(res, 'redis');
+    return res.status(200).json(JSON.parse(cached));
   });
 };
 
@@ -109,18 +123,9 @@ export const paginationHeaders = (req, res, next) => {
 
 export const ProviderController = (app, redis) => {
   app.use(paginationHeaders);
-  app.get('/providers', (req, res) => {
-    if (needsCache(req) === false) {
-      return getFromMongo(req, res, redis);
-    }
-    return redis.get(req.originalUrl, (error, cached) => {
-      if (error || !cached || cached === null) {
-        return getFromMongo(req, res, redis);
-      }
-      setResponseHeadersDbEngine(res, 'redis');
-      return res.status(200).json(JSON.parse(cached));
-    });
-  });
+  app.get('/providers', (req, res) =>
+    needsCache(req) === false ? getFromMongo(req, res, redis) : getFromRedis(req, res, redis)
+  );
 };
 
 export default ProviderController;

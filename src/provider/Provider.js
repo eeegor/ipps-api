@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const providerSchema = new mongoose.Schema({
+const Provider = mongoose.model('Provider', {
   providerName: String,
   providerStreetAddress: String,
   providerCity: String,
@@ -13,4 +13,4 @@ const providerSchema = new mongoose.Schema({
   averageMedicarePayments: Number
 });
 
-export default mongoose.model('Provider', providerSchema);
+export default Provider;
