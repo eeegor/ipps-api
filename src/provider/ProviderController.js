@@ -29,7 +29,7 @@ export const needsCache = req =>
   req.query.cache === 'false' || req.query.cache === false ? false : true;
 
 export const setResponseHeadersDbEngine = (res, engine) => {
-  res.setHeader('X-db-engine', engine);
+  res.setHeader('x-db-engine', engine);
 };
 
 export const transformResponse = providers =>
@@ -111,11 +111,11 @@ export const getFromRedis = (req, res, redis) => {
 };
 
 export const paginationHeaders = (req, res, next) => {
-  res.setHeader('X-current-page', responsePagination(req).page);
-  res.setHeader('X-current-page-limit', responsePagination(req).perPage);
+  res.setHeader('x-current-page', responsePagination(req).page);
+  res.setHeader('x-current-page-limit', responsePagination(req).perPage);
   Provider.countDocuments((error, count) => {
     if (!error) {
-      res.setHeader('X-total-count', count);
+      res.setHeader('x-total-count', count);
     }
     next();
   });
