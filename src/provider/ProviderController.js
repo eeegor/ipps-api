@@ -34,7 +34,7 @@ export const setResponseHeadersDbEngine = (res, engine) => {
 };
 
 export const transformResponse = providers =>
-  providers.map(item => {
+  providers && providers.length > 0 && providers.map(item => {
     const hospitalDesc = item.hospitalReferralRegionDescription.split(' - ');
     return {
       'Provider Name': item.providerName.toUpperCase(),
@@ -93,11 +93,14 @@ export const getFromMongo = (req, res, redis) => {
     .lean()
     .then(
       providers => {
-        if (needsCache(req) === true) {
-          setRedis(req, res, redis, providers);
+        if (providers && providers.length > 0) {
+          if (needsCache(req) === true) {
+            setRedis(req, res, redis, providers);
+          }
+          setResponseHeadersDbEngine(res, 'mongo');
+          return res.status(200).json(transformResponse(providers));
         }
-        setResponseHeadersDbEngine(res, 'mongo');
-        return res.status(200).json(transformResponse(providers));
+        return res.status(200).json([]);
       },
       error =>
         res.json({
@@ -130,7 +133,7 @@ export const paginationHeaders = (req, res, next) => {
 
 export const ProviderController = (app, redis) => {
   app.use(paginationHeaders);
-  app.get('/providers', (req, res) =>
+  app.get('/providers', authenticate, (req, res) =>
     needsCache(req) === false
       ? getFromMongo(req, res, redis)
       : getFromRedis(req, res, redis)

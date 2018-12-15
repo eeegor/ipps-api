@@ -3,124 +3,127 @@ import jwt from 'jsonwebtoken';
 import { User, USERS_SECRET } from '../../user/User';
 import { Provider } from '../../provider/Provider';
 
-const user1id = new Types.ObjectId();
-const user2id = new Types.ObjectId();
+const goodUserId = new Types.ObjectId();
+const badUserId = new Types.ObjectId();
 
 const users = [
   {
-    _id: user1id,
+    _id: goodUserId,
     email: 'good@example.com',
     password: 'secret',
     tokens: [
       {
         access: 'auth',
         token: jwt
-          .sign({ _id: user1id, access: 'auth' }, USERS_SECRET)
+          .sign({ _id: goodUserId, access: 'auth' }, USERS_SECRET)
           .toString()
       }
     ]
   },
   {
-    _id: user2id,
+    _id: badUserId,
     email: 'bad@example.com',
     password: 'secret'
   }
 ];
 
+export const goodUser = users[0];
+export const badUser = users[1];
+
 const populateUsers = done => {
   User.deleteMany()
     .then(() => {
-      const goodUser = new User(users[0]).save();
-      const badUser = new User(users[1]).save();
-      return Promise.all([goodUser, badUser]);
+      const goodUserId = new User(users[0]).save();
+      const badUserId = new User(users[1]).save();
+      return Promise.all([goodUserId, badUserId]);
     })
     .then(() => done());
 };
 
 const providers = [
   {
-    'Provider Name': 'FLORIDA HOSPITAL',
-    'Provider Street Address': '601 E ROLLINS ST',
-    'Provider City': 'ORLANDO',
-    'Provider State': 'FL',
-    'Provider Zip Code': 32803,
-    'Hospital Referral Region Description': 'FL - Orlando',
-    'Total Discharges': 93,
-    'Average Covered Charges': '$33,949.48',
-    'Average Total Payments': '$6,845.37',
-    'Average Medicare Payments': '$5,042.31'
+    providerName: 'FLORIDA HOSPITAL',
+    providerStreetAddress: '601 E ROLLINS ST',
+    providerCity: 'ORLANDO',
+    providerState: 'TX',
+    providerZipCode: 32803,
+    hospitalReferralRegionDescription: 'FL - Orlando',
+    totalDischarges: 93,
+    averageCoveredCharges: 33949.48,
+    averageTotalPayments: 6845.37,
+    averageMedicarePayments: 5042.31
   },
   {
-    'Provider Name': "ST VINCENT'S MEDICAL CENTER",
-    'Provider Street Address': '1 SHIRCLIFF WAY',
-    'Provider City': 'JACKSONVILLE',
-    'Provider State': 'FL',
-    'Provider Zip Code': 32204,
-    'Hospital Referral Region Description': 'FL - Jacksonville',
-    'Total Discharges': 88,
-    'Average Covered Charges': '$22,969.6',
-    'Average Total Payments': '$5,777.48',
-    'Average Medicare Payments': '$4,560.15'
+    providerName: "ST VINCENT'S MEDICAL CENTER",
+    providerStreetAddress: '1 SHIRCLIFF WAY',
+    providerCity: 'JACKSONVILLE',
+    providerState: 'TX',
+    providerZipCode: 32204,
+    hospitalReferralRegionDescription: 'FL - Jacksonville',
+    totalDischarges: 88,
+    averageCoveredCharges: 22969.6,
+    averageTotalPayments: 5777.48,
+    averageMedicarePayments: 4560.15
   },
   {
-    'Provider Name': 'BAPTIST MEDICAL CENTER',
-    'Provider Street Address': '800 PRUDENTIAL DR',
-    'Provider City': 'JACKSONVILLE',
-    'Provider State': 'FL',
-    'Provider Zip Code': 32207,
-    'Hospital Referral Region Description': 'FL - Jacksonville',
-    'Total Discharges': 103,
-    'Average Covered Charges': '$21,729.69',
-    'Average Total Payments': '$6,745.63',
-    'Average Medicare Payments': '$4,615.54'
+    providerName: 'BAPTIST MEDICAL CENTER',
+    providerStreetAddress: '800 PRUDENTIAL DR',
+    providerCity: 'JACKSONVILLE',
+    providerState: 'TX',
+    providerZipCode: 32207,
+    hospitalReferralRegionDescription: 'FL - Jacksonville',
+    totalDischarges: 103,
+    averageCoveredCharges: 21729.69,
+    averageTotalPayments: 6745.63,
+    averageMedicarePayments: 4615.54
   },
   {
-    'Provider Name': 'SARASOTA MEMORIAL HOSPITAL',
-    'Provider Street Address': '1700 S TAMIAMI TRL',
-    'Provider City': 'SARASOTA',
-    'Provider State': 'FL',
-    'Provider Zip Code': 34239,
-    'Hospital Referral Region Description': 'FL - Sarasota',
-    'Total Discharges': 92,
-    'Average Covered Charges': '$26,361.33',
-    'Average Total Payments': '$5,689.8',
-    'Average Medicare Payments': '$4,666.79'
+    providerName: 'SARASOTA MEMORIAL HOSPITAL',
+    providerStreetAddress: '1700 S TAMIAMI TRL',
+    providerCity: 'SARASOTA',
+    providerState: 'FL',
+    providerZipCode: 34239,
+    hospitalReferralRegionDescription: 'FL - Sarasota',
+    totalDischarges: 92,
+    averageCoveredCharges: 26361.33,
+    averageTotalPayments: 5689.8,
+    averageMedicarePayments: 4666.79
   },
   {
-    'Provider Name': 'NORTH FLORIDA REGIONAL MEDICAL CENTER',
-    'Provider Street Address': '6500 NEWBERRY RD',
-    'Provider City': 'GAINESVILLE',
-    'Provider State': 'FL',
-    'Provider Zip Code': 32605,
-    'Hospital Referral Region Description': 'FL - Gainesville',
-    'Total Discharges': 108,
-    'Average Covered Charges': '$50,730.63',
-    'Average Total Payments': '$5,906.22',
-    'Average Medicare Payments': '$4,624'
+    providerName: 'NORTH FLORIDA REGIONAL MEDICAL CENTER',
+    providerStreetAddress: '6500 NEWBERRY RD',
+    providerCity: 'GAINESVILLE',
+    providerState: 'FL',
+    providerZipCode: 32605,
+    hospitalReferralRegionDescription: 'FL - Gainesville',
+    totalDischarges: 108,
+    averageCoveredCharges: 50730.63,
+    averageTotalPayments: 5906.22,
+    averageMedicarePayments: 4624
   },
   {
-    'Provider Name': 'OCALA REGIONAL MEDICAL CENTER',
-    'Provider Street Address': '1431 SW 1ST AVE',
-    'Provider City': 'OCALA',
-    'Provider State': 'FL',
-    'Provider Zip Code': 34478,
-    'Hospital Referral Region Description': 'FL - Ocala',
-    'Total Discharges': 88,
-    'Average Covered Charges': '$40,038.31',
-    'Average Total Payments': '$5,344.64',
-    'Average Medicare Payments': '$4,328.48'
+    providerName: 'OCALA REGIONAL MEDICAL CENTER',
+    providerStreetAddress: '1431 SW 1ST AVE',
+    providerCity: 'OCALA',
+    providerState: 'FL',
+    providerZipCode: 34478,
+    hospitalReferralRegionDescription: 'FL - Ocala',
+    totalDischarges: 12,
+    averageCoveredCharges: 40038.31,
+    averageTotalPayments: 5344.64,
+    averageMedicarePayments: 4328.48
   },
   {
-    'Provider Name': 'NORTHEAST GEORGIA MEDICAL CENTER, INC',
-    'Provider Street Address': '743 SPRING STREET',
-    'Provider City': 'GAINESVILLE',
-    'Provider State': 'GA',
-    'Provider Zip Code': 30501,
-    'Hospital Referral Region Description': 'GA - Atlanta',
-    'Total Discharges': 82,
-    'Average Covered Charges': '$25,197.6',
-    'Average Total Payments': '$6,513.19',
-    'Average Medicare Payments': '$4,760.65'
+    providerName: 'NORTHEAST GEORGIA MEDICAL CENTER, INC',
+    providerStreetAddress: '743 SPRING STREET',
+    providerCity: 'GAINESVILLE',
+    providerState: 'GA',
+    providerZipCode: 30501,
+    hospitalReferralRegionDescription: 'GA - Atlanta',
+    totalDischarges: 10,
+    averageCoveredCharges: 25197.6,
+    averageTotalPayments: 6513.19,
+    averageMedicarePayments: 4760.65
   }
 ];
 
