@@ -18,6 +18,29 @@ const UserController = app => {
       });
   });
 
+  app.post('/login', (req, res) => {
+    const body = pick(req.body, ['email', 'password']);
+
+    User.findByEmailPassword(body.email, body.password)
+      .then(user => {
+        user
+          .generateAuthToken()
+          .then(token => {
+            res.header('x-auth', token);
+            res.status(200).send(user);
+          })
+          .catch(error =>
+            Promise.reject({
+              message: 'Something went wrong generating the auth token',
+              error
+            })
+          );
+      })
+      .catch(error => {
+        res.status(400).send(error);
+      });
+  });
+
   app.get('/profile', authenticate, (req, res) => {
     res.status(200).send(req.user);
   });

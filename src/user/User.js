@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const USERS_SECRET =
-  process.env.USERS_SECRET || 'replace-this-secret-string-in-case-no-one-is-defined';
+  process.env.USERS_SECRET || 'kkewiudc23aha87sadasb32n223';
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -61,6 +61,28 @@ UserSchema.statics.findByToken = function findByToken(token) {
     'tokens.access': 'auth'
   });
   return result;
+};
+
+UserSchema.statics.findByEmailPassword = function findByEmailPassword(
+  email,
+  password
+) {
+  const User = this;
+
+  return User.findOne({ email }).then(user => {
+    if (!user) {
+      return Promise.reject('No user found...');
+    }
+
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(password, user.password, (error, success) => {
+        if (success) {
+          resolve(user);
+        }
+        reject('The credentials are not valid');
+      });
+    });
+  });
 };
 
 UserSchema.methods.generateAuthToken = function generateAuthToken() {
