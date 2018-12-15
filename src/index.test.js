@@ -70,6 +70,55 @@ describe('POST /users', () => {
   });
 });
 
+describe('POST /login', () => {
+  it('should login user and generate token', done => {
+    request(app)
+      .post('/login')
+      .send({
+        email: users[0].email,
+        password: users[0].password
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.headers['x-auth']).toBeTruthy();
+      })
+      .end((error, res) => {
+        if (error) {
+          return done(error);
+        }
+
+        User.findById(users[0]._id)
+          .then(user => {
+            expect(user.tokens[0]).toHaveProperty('access', 'auth')
+            expect(user.tokens[0].token).toBeDefined()
+            done();
+          })
+          .catch(error => done(error));
+      });
+  });
+
+  it('should not login user and not generate token', done => {
+    request(app)
+      .post('/login')
+      .send({
+        email: users[0].email,
+        password: 'wrong-password'
+      })
+      .expect(400)
+      .expect(res => {
+        expect(res.headers['x-auth']).not.toBeTruthy();
+      })
+      .end(err => done(err && err));
+
+      User.findById(users[0]._id)
+          .then(user => {
+            expect(user.tokens.length).toBe(0)
+            done();
+          })
+          .catch(error => done(error));
+  });
+});
+
 describe('GET /profile', () => {
   it('should return profile for logged in user', done => {
     request(app)
