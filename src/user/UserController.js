@@ -41,6 +41,17 @@ const UserController = app => {
       });
   });
 
+  app.delete('/logout', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(
+      () => {
+        res.status(200).send({
+          message: 'Goodby friend!'
+        });
+      },
+      error => res.status(400).send(error)
+    );
+  });
+
   app.get('/profile', authenticate, (req, res) => {
     res.status(200).send(req.user);
   });

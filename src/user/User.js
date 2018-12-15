@@ -96,6 +96,20 @@ UserSchema.methods.generateAuthToken = function generateAuthToken() {
   return user.save().then(() => token);
 };
 
+UserSchema.methods.removeToken = function removeToken(token) {
+  const user = this;
+
+  return user
+    .update({
+      $pull: {
+        tokens: {
+          token
+        }
+      }
+    })
+    .then(() => token);
+};
+
 // eslint-disable-next-line consistent-return
 UserSchema.pre('save', function preSave(next) {
   const user = this;

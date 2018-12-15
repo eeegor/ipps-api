@@ -9,6 +9,9 @@ import {
 import app from './index';
 import { User } from './user/User';
 
+const goodUser = users[0];
+const badUser = users[1];
+
 beforeEach(populateUsers);
 beforeEach(populateProviders);
 
@@ -18,7 +21,7 @@ describe('GET /', () => {
       .get('/')
       .expect('Ipps Patients Data Api')
       .expect(200)
-      .end(err => done(err && err));
+      .end(error => done(error && error));
   });
 });
 
@@ -56,17 +59,17 @@ describe('POST /users', () => {
       .post('/users')
       .send({ email })
       .expect(400)
-      .end(err => done(err && err));
+      .end(error => done(error && error));
   });
 
   it('should not create user if email exists', done => {
-    const email = users[0].email;
+    const email = goodUser.email;
 
     request(app)
       .post('/users')
       .send({ email })
       .expect(400)
-      .end(err => done(err && err));
+      .end(error => done(error && error));
   });
 });
 
@@ -75,25 +78,25 @@ describe('POST /login', () => {
     request(app)
       .post('/login')
       .send({
-        email: users[0].email,
-        password: users[0].password
+        email: goodUser.email,
+        password: goodUser.password
       })
       .expect(200)
       .expect(res => {
         expect(res.headers['x-auth']).toBeTruthy();
       })
-      .end((error, res) => {
+      .end((error) => {
         if (error) {
           return done(error);
         }
 
-        User.findById(users[0]._id)
+        User.findById(goodUser._id)
           .then(user => {
-            expect(user.tokens[0]).toHaveProperty('access', 'auth')
-            expect(user.tokens[0].token).toBeDefined()
+            expect(user.tokens[0]).toHaveProperty('access', 'auth');
+            expect(user.tokens[0].token).toBeDefined();
             done();
           })
-          .catch(error => done(error));
+          .catch(error => done(error && error));
       });
   });
 
@@ -101,21 +104,25 @@ describe('POST /login', () => {
     request(app)
       .post('/login')
       .send({
-        email: users[0].email,
+        email: badUser.email,
         password: 'wrong-password'
       })
       .expect(400)
       .expect(res => {
         expect(res.headers['x-auth']).not.toBeTruthy();
       })
-      .end(err => done(err && err));
+      .end((error) => {
+        if (error) {
+          return done(error);
+        }
 
-      User.findById(users[0]._id)
+        User.findById(badUser._id)
           .then(user => {
-            expect(user.tokens.length).toBe(0)
+            expect(user.tokens.length).toBe(0);
             done();
           })
-          .catch(error => done(error));
+          .catch(error => done(error && error));
+      });
   });
 });
 
@@ -123,20 +130,20 @@ describe('GET /profile', () => {
   it('should return profile for logged in user', done => {
     request(app)
       .get('/profile')
-      .set('x-auth', users[0].tokens[0].token)
+      .set('x-auth', goodUser.tokens[0].token)
       .expect(200)
       .expect(res => {
-        expect(res.body.id).toBe(users[0]._id.toHexString());
-        expect(res.body.email).toBe(users[0].email);
+        expect(res.body.id).toBe(goodUser._id.toHexString());
+        expect(res.body.email).toBe(goodUser.email);
       })
-      .end(err => done(err && err));
+      .end(error => done(error && error));
   });
 
   it('should return 401 for logged out visitors', done => {
     request(app)
       .get('/profile')
       .expect(401)
-      .end(err => done(err && err));
+      .end(error => done(error && error));
   });
 });
 
@@ -145,6 +152,6 @@ describe('GET /providers', () => {
     request(app)
       .get('/providers')
       .expect(200)
-      .end(err => done(err && err));
+      .end(error => done(error && error));
   });
 });
