@@ -31,7 +31,9 @@ const corsOptions = {
     } else {
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  exposedHeaders:
+    'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-total-count'
 };
 
 const app = express();

@@ -1,7 +1,7 @@
 {
-  "name": "api-patients",
+  "name": "api-ipps-secure",
   "version": "0.0.1",
-  "description": "An api for ipps patient data",
+  "description": "A demo api for ipps patient data",
   "main": "dist",
   "author": "Egor Kirpichev <egor.kirpichev@gmail.com>",
   "license": "MIT",
@@ -9,11 +9,12 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon --watch src --exec \"babel-node src\"",
     "build": "babel src --out-dir dist",
+    "prebuild": "yarn format",
     "prestart": "yarn -s build",
     "start": "NODE_ENV=production pm2 start dist",
     "lint": "eslint src && prettier --list-different \"src/**/*.js\"",
     "format": "prettier --write \"src/**/*.js\"",
-    "deploy": "yarn run build && now",
+    "deploy": "yarn build && now",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && nyc mocha src/**/*.test.js --require @babel/register --exit"
   },
   "prettier": {

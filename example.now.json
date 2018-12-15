@@ -7,7 +7,9 @@
           "MONGO_DB": "mongodb://{mongo-username}:{mongo-password}@{mongo-host}:{mongo-port}/{mongo-database}",
           "REDIS_PORT": "{redis-port}",
           "REDIS_HOST": "{redis-host}",
-          "REDIS_AUTH_PASS": "{redis-auth-pass}"
+          "REDIS_AUTH_PASS": "{redis-auth-pass}",
+          "CORS_WHITELIST": "{url.com}, {http://url.com}, {https://url.com}",
+          "USERS_SECRET": "{any-long-complicated-string-will-do}"
     },
     "builds": [
         { "src": "dist/index.js", "use": "@now/node-server" }
