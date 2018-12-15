@@ -37,16 +37,6 @@ const UserSchema = new mongoose.Schema({
   ]
 });
 
-UserSchema.methods.toJSON = function toJSON() {
-  const user = this;
-  const userObject = user.toObject();
-  return {
-    id: userObject._id,
-    email: userObject.email,
-    password: userObject.password
-  };
-};
-
 UserSchema.statics.findByToken = function findByToken(token) {
   const User = this;
   let decoded;
@@ -85,6 +75,16 @@ UserSchema.statics.findByEmailPassword = function findByEmailPassword(
   });
 };
 
+UserSchema.methods.toJSON = function toJSON() {
+  const user = this;
+  const userObject = user.toObject();
+  return {
+    id: userObject._id,
+    email: userObject.email,
+    password: userObject.password
+  };
+};
+
 UserSchema.methods.generateAuthToken = function generateAuthToken() {
   const user = this;
   const access = 'auth';
@@ -96,7 +96,7 @@ UserSchema.methods.generateAuthToken = function generateAuthToken() {
   return user.save().then(() => token);
 };
 
-UserSchema.methods.removeToken = function removeToken(token) {
+UserSchema.methods.removeAuthToken = function removeAuthToken(token) {
   const user = this;
 
   return user
