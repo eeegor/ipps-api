@@ -6,13 +6,13 @@ import app from '../index';
 
 beforeEach(populateUsers);
 
-describe('POST /users', () => {
+describe('POST /signup', () => {
   it('should create a new user', done => {
     const email = 'bob@example.com';
     const password = 'bobs-secret';
 
     request(app)
-      .post('/users')
+      .post('/signup')
       .send({ email, password })
       .expect(201)
       .expect(res => {

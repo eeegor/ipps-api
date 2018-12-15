@@ -34,7 +34,9 @@ export const setResponseHeadersDbEngine = (res, engine) => {
 };
 
 export const transformResponse = providers =>
-  providers && providers.length > 0 && providers.map(item => {
+  providers &&
+  providers.length > 0 &&
+  providers.map(item => {
     const hospitalDesc = item.hospitalReferralRegionDescription.split(' - ');
     return {
       'Provider Name': item.providerName.toUpperCase(),

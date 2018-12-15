@@ -19,17 +19,19 @@ describe('GET /providers', () => {
       .set('x-auth', goodUser.tokens[0].token)
       .expect(200)
       .expect(res => {
-        expect(typeof res.body[0]['Average Covered Charges']).toBe('string')
-        expect(typeof res.body[0]['Average Medicare Payments']).toBe('string')
-        expect(typeof res.body[0]['Average Total Payments']).toBe('string')
-        expect(typeof res.body[0]['Hospital Referral Region Description']).toBe('string')
-        expect(typeof res.body[0]['Provider City']).toBe('string')
-        expect(typeof res.body[0]['Provider Name']).toBe('string')
-        expect(typeof res.body[0]['Provider State']).toBe('string')
-        expect(typeof res.body[0]['Provider Street Address']).toBe('string')
-        expect(typeof res.body[0]['Provider Zip Code']).toBe('number')
-        expect(typeof res.body[0]['Total Discharges']).toBe('number')
-        expect(typeof res.body[0]['Total Discharges']).toBe('number')
+        expect(typeof res.body[0]['Average Covered Charges']).toBe('string');
+        expect(typeof res.body[0]['Average Medicare Payments']).toBe('string');
+        expect(typeof res.body[0]['Average Total Payments']).toBe('string');
+        expect(typeof res.body[0]['Hospital Referral Region Description']).toBe(
+          'string'
+        );
+        expect(typeof res.body[0]['Provider City']).toBe('string');
+        expect(typeof res.body[0]['Provider Name']).toBe('string');
+        expect(typeof res.body[0]['Provider State']).toBe('string');
+        expect(typeof res.body[0]['Provider Street Address']).toBe('string');
+        expect(typeof res.body[0]['Provider Zip Code']).toBe('number');
+        expect(typeof res.body[0]['Total Discharges']).toBe('number');
+        expect(typeof res.body[0]['Total Discharges']).toBe('number');
       })
       .end(error => done(error && error));
   });

@@ -3,7 +3,7 @@ import { authenticate } from '../middleware';
 import { User } from './User';
 
 const UserController = app => {
-  app.post('/users', (req, res) => {
+  app.post('/signup', (req, res) => {
     const body = pick(req.body, ['email', 'password']);
     const user = new User({ ...body });
     user
