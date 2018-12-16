@@ -29,11 +29,13 @@ const UserController = app => {
             res.header('x-auth', token);
             res.status(200).send(user);
           })
-          .catch(error =>
-            Promise.reject({
-              message: 'Something went wrong generating the auth token',
-              error
-            })
+          .catch(
+            // istanbul ignore next
+            error =>
+              Promise.reject({
+                message: 'Something went wrong generating the auth token',
+                error
+              })
           );
       })
       .catch(error => {
@@ -48,6 +50,7 @@ const UserController = app => {
           message: 'Goodby friend!'
         });
       },
+      // istanbul ignore next
       error => res.status(400).send(error)
     );
   });

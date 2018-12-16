@@ -4,6 +4,7 @@ const authenticate = (req, res, next) => {
   const token = req.header('x-auth');
   User.findByToken(token)
     .then(user => {
+      // istanbul ignore next
       if (!user) {
         // eslint-disable-next-line prefer-promise-reject-errors
         return Promise.reject('There was a problem fetching the user...');

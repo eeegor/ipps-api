@@ -116,10 +116,12 @@ UserSchema.pre('save', function preSave(next) {
 
   if (user.isModified('password')) {
     bcrypt.genSalt(10, (saltError, salt) => {
+      // istanbul ignore if
       if (saltError) {
         Promise.reject(saltError);
       }
       bcrypt.hash(user.password, salt, (hashError, hash) => {
+        // istanbul ignore if
         if (hashError) {
           Promise.reject(hashError);
         }

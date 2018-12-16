@@ -10,6 +10,7 @@ export const pageNumber = req => {
 
 export const limit = req => {
   const isNumber = parseInt(req.query.per_page, 10);
+  // istanbul ignore next
   const perPage = parseInt(process.env.PER_PAGE, 10) || 100;
   const validLimit = (isNumber && isNumber > 0 && isNumber) || perPage;
   return validLimit;
@@ -85,8 +86,10 @@ export const requestParams = req => ({
 export const setRedis = (req, res, redis, providers) => {
   redis.setex(
     req.originalUrl,
+    // istanbul ignore next
     process.env.REDIS_TTL || 3600,
     JSON.stringify(transformResponse(providers)),
+    // istanbul ignore next
     redisSetError => {
       if (redisSetError || !providers || providers === null) {
         return res.status(404).json({
@@ -113,6 +116,7 @@ export const getFromMongo = (req, res, redis) => {
         }
         return res.status(200).json([]);
       },
+      // istanbul ignore next
       error =>
         res.json({
           info: "Can't get providers",
@@ -135,6 +139,7 @@ export const paginationHeaders = (req, res, next) => {
   res.setHeader('x-current-page', responsePagination(req).page);
   res.setHeader('x-current-page-limit', responsePagination(req).perPage);
   Provider.countDocuments((error, count) => {
+    // istanbul ignore next
     if (!error) {
       res.setHeader('x-total-count', count);
     }
