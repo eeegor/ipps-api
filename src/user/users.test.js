@@ -37,7 +37,7 @@ describe('POST /signup', () => {
     const email = 'bob@example.com';
 
     request(app)
-      .post('/users')
+      .post('/signup')
       .send({ email })
       .expect(400)
       .end(error => done(error && error));
@@ -47,7 +47,7 @@ describe('POST /signup', () => {
     const email = goodUser.email;
 
     request(app)
-      .post('/users')
+      .post('/signup')
       .send({ email })
       .expect(400)
       .end(error => done(error && error));
