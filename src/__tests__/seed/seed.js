@@ -2,6 +2,9 @@ import { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { User, USERS_SECRET } from '../../user/User';
 import { Provider } from '../../provider/Provider';
+import { redis } from '../../index';
+
+export const flushRedis = () => redis.flushdb();
 
 const goodUserId = new Types.ObjectId();
 const badUserId = new Types.ObjectId();
@@ -42,10 +45,10 @@ const populateUsers = done => {
 
 const providers = [
   {
-    providerName: 'FLORIDA HOSPITAL',
+    providerName: 'ZERO',
     providerStreetAddress: '601 E ROLLINS ST',
     providerCity: 'ORLANDO',
-    providerState: 'TX',
+    providerState: 'tx',
     providerZipCode: 32803,
     hospitalReferralRegionDescription: 'FL - Orlando',
     totalDischarges: 93,
@@ -54,10 +57,22 @@ const providers = [
     averageMedicarePayments: 5042.31
   },
   {
-    providerName: "ST VINCENT'S MEDICAL CENTER",
+    providerName: 'FIRST',
+    providerStreetAddress: '601 E ROLLINS ST',
+    providerCity: 'ORLANDO',
+    providerState: 'tx',
+    providerZipCode: 32803,
+    hospitalReferralRegionDescription: 'FL - Orlando',
+    totalDischarges: 93,
+    averageCoveredCharges: 33949.48,
+    averageTotalPayments: 6845.37,
+    averageMedicarePayments: 5042.31
+  },
+  {
+    providerName: 'SECOND',
     providerStreetAddress: '1 SHIRCLIFF WAY',
     providerCity: 'JACKSONVILLE',
-    providerState: 'TX',
+    providerState: 'tx',
     providerZipCode: 32204,
     hospitalReferralRegionDescription: 'FL - Jacksonville',
     totalDischarges: 88,
@@ -66,10 +81,10 @@ const providers = [
     averageMedicarePayments: 4560.15
   },
   {
-    providerName: 'BAPTIST MEDICAL CENTER',
+    providerName: 'THIRD',
     providerStreetAddress: '800 PRUDENTIAL DR',
     providerCity: 'JACKSONVILLE',
-    providerState: 'TX',
+    providerState: 'tx',
     providerZipCode: 32207,
     hospitalReferralRegionDescription: 'FL - Jacksonville',
     totalDischarges: 103,
@@ -78,10 +93,10 @@ const providers = [
     averageMedicarePayments: 4615.54
   },
   {
-    providerName: 'SARASOTA MEMORIAL HOSPITAL',
+    providerName: 'FOURTH',
     providerStreetAddress: '1700 S TAMIAMI TRL',
     providerCity: 'SARASOTA',
-    providerState: 'FL',
+    providerState: 'fl',
     providerZipCode: 34239,
     hospitalReferralRegionDescription: 'FL - Sarasota',
     totalDischarges: 92,
@@ -90,10 +105,10 @@ const providers = [
     averageMedicarePayments: 4666.79
   },
   {
-    providerName: 'NORTH FLORIDA REGIONAL MEDICAL CENTER',
+    providerName: 'FIFTH',
     providerStreetAddress: '6500 NEWBERRY RD',
     providerCity: 'GAINESVILLE',
-    providerState: 'FL',
+    providerState: 'fl',
     providerZipCode: 32605,
     hospitalReferralRegionDescription: 'FL - Gainesville',
     totalDischarges: 108,
@@ -102,10 +117,10 @@ const providers = [
     averageMedicarePayments: 4624
   },
   {
-    providerName: 'OCALA REGIONAL MEDICAL CENTER',
+    providerName: 'SIXTH',
     providerStreetAddress: '1431 SW 1ST AVE',
     providerCity: 'OCALA',
-    providerState: 'FL',
+    providerState: 'fl',
     providerZipCode: 34478,
     hospitalReferralRegionDescription: 'FL - Ocala',
     totalDischarges: 12,
@@ -114,10 +129,10 @@ const providers = [
     averageMedicarePayments: 4328.48
   },
   {
-    providerName: 'NORTHEAST GEORGIA MEDICAL CENTER, INC',
+    providerName: 'SEVENTH',
     providerStreetAddress: '743 SPRING STREET',
     providerCity: 'GAINESVILLE',
-    providerState: 'GA',
+    providerState: 'ga',
     providerZipCode: 30501,
     hospitalReferralRegionDescription: 'GA - Atlanta',
     totalDischarges: 10,
