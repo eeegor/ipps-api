@@ -1,10 +1,16 @@
 import expect from 'expect';
 import request from 'supertest';
-import { goodUser, badUser, populateUsers } from '../__tests__/seed/seed';
+import {
+  goodUser,
+  badUser,
+  populateUsers,
+  flushRedis
+} from '../__tests__/seed/seed';
 import { User } from './User';
 import app from '../index';
 
 beforeEach(populateUsers);
+beforeEach(flushRedis);
 
 describe('POST /signup', () => {
   it('should create a new user', done => {
@@ -106,6 +112,31 @@ describe('POST /login', () => {
           .catch(error => done(error && error));
       });
   });
+
+  it("should not login user if can't find one by email", done => {
+    request(app)
+      .post('/login')
+      .send({
+        email: 'non-existing@example.com',
+        password: 'wrong-password'
+      })
+      .expect(400)
+      .expect(res => {
+        expect(res.headers['x-auth']).not.toBeTruthy();
+      })
+      .end(error => {
+        if (error) {
+          return done(error);
+        }
+
+        User.findById(badUser._id)
+          .then(user => {
+            expect(user.tokens.length).toBe(0);
+            done();
+          })
+          .catch(error => done(error && error));
+      });
+  });
 });
 
 describe('GET /profile', () => {
@@ -117,6 +148,26 @@ describe('GET /profile', () => {
       .expect(res => {
         expect(res.body.id).toBe(goodUser._id.toHexString());
         expect(res.body.email).toBe(goodUser.email);
+      })
+      .end(error => done(error && error));
+  });
+
+  it('should return 401 for logged out visitors', done => {
+    request(app)
+      .get('/profile')
+      .expect(401)
+      .end(error => done(error && error));
+  });
+});
+
+describe('DELETE /logout', () => {
+  it('should return profile for logged in user', done => {
+    request(app)
+      .delete('/logout')
+      .set('x-auth', goodUser.tokens[0].token)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.message).toBe('Goodby friend!');
       })
       .end(error => done(error && error));
   });
