@@ -9,24 +9,53 @@ import user from './user/UserController';
 import provider from './provider/ProviderController';
 
 const env = process.env.NODE_ENV || 'development';
+const port = env === 'test' ? process.env.PORT_TEST || 50023 : process.env.PORT || 5000;
 
 console.log('***** env *****', env);
-if (env === 'development') {
+if (env === 'development' || env === 'production') {
   console.log('Using DB:', process.env.MONGO_DB);
+  console.log('Using REDIS:', `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
 } else if (env === 'test') {
-  console.log('** SWITCH DB FOR TEST ***');
-  process.env.PORT = 30023;
+  console.log('** SWITCH ENV FOR TEST ***');
+  process.env.PORT = process.env.PORT_TEST || 50023;
   process.env.MONGO_DB = process.env.MONGO_DB_TEST;
+  process.env.REDIS_PORT=process.env.REDIS_PORT_TEST;
+  process.env.REDIS_HOST=process.env.REDIS_HOST_TEST;
+  process.env.REDIS_AUTH_PASS=process.env.REDIS_AUTH_PASS_TEST;
+  process.env.REDIS_TTL=process.env.REDIS_TTL_TEST;
   console.log('Using DB:', process.env.MONGO_DB);
+  console.log('Using REDIS:', `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
 }
-
-const port = process.env.PORT || 3000;
+console.log('Using PORT:', process.env.PORT);
 
 const whitelist =
-  process.env.CORS_WHITELIST.split(',').map(w => w.trim()) || [];
+  process.env.CORS_WHITELIST.split(',').map(entry => {
+    const trimmed = entry.trim();
+    if (entry.match('localhost'|'127.0.0.1')) {
+      const port = entry.split(':').map(p => p.trim())[1]
+      return [
+        `127.0.0.1:${port}`,
+        `http://127.0.0.1:${port}`,
+        `https://127.0.0.1:${port}`,
+        `localhost:${port}`,
+        `http://localhost:${port}`,
+        `https://localhost:${port}`
+      ]
+    }
+    return [
+      `${trimmed}`,
+      `http://${trimmed}`,
+      `https://${trimmed}`
+    ];
+  }) || [];
+
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
+    const extendedWhitelist = [].concat.apply([], whitelist);
+    // uncomment to debug
+    console.log('*** ORIGIN ***', origin);
+    console.log('*** WHITELIST ***', extendedWhitelist.join(', '))
+    if (extendedWhitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -38,18 +67,17 @@ const corsOptions = {
 
 const app = express();
 
-if (env !== 'test' || env !== 'development') {
-  app.use((req, res, next) => {
-    req.headers.origin = req.headers.origin || req.headers.host;
-    next();
-  });
-  app.use(cors(corsOptions));
-  app.options('*', cors());
-}
+// if (env !== 'test' || env !== 'development') {
+//   app.use((req, res, next) => {
+//     req.headers.origin = req.headers.origin || req.headers.host;
+//     next();
+//   });
+//   app.use(cors(corsOptions));
+//   app.options('*', cors());
+// }
 
-const shouldCompress = (req, res) =>
-  req.headers['x-no-compression'] ? false : compression.filter(req, res);
-app.use(compression({ filter: shouldCompress }));
+app.use(compression({ filter: (req, res) =>
+  req.headers['x-no-compression'] ? false : compression.filter(req, res) }));
 
 mongoose.Promise = global.Promise;
 mongoose.set('useCreateIndex', true);
@@ -84,7 +112,7 @@ export const providers = provider(app, redis);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`Server is running: http://127.0.0.1:${port}`);
+  console.log(`Server url: http://127.0.0.1:${port}`);
 });
 
 export default server;
