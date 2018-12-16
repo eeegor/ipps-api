@@ -100,7 +100,7 @@ UserSchema.methods.removeAuthToken = function removeAuthToken(token) {
   const user = this;
 
   return user
-    .update({
+    .updateOne({
       $pull: {
         tokens: {
           token
