@@ -16,7 +16,7 @@ export const limit = req => {
 };
 
 export const paginationQuery = req => ({
-  skip: pageNumber(req),
+  skip: pageNumber(req) === 1 ? 0 : limit(req) * (pageNumber(req) - 1),
   limit: limit(req)
 });
 
