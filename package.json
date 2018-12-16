@@ -15,7 +15,7 @@
     "lint": "eslint src && prettier --list-different \"src/**/*.js\"",
     "format": "prettier --write \"src/**/*.js\"",
     "deploy": "yarn build && now",
-    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && nyc mocha src/**/*.test.js --require @babel/register --exit"
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && nyc mocha \"./src/**/*.test.js\" --require @babel/register --exit"
   },
   "prettier": {
     "printWidth": 80,
