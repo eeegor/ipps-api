@@ -48,9 +48,18 @@ export const transformResponse = providers =>
         hospitalDesc[1]
       }`,
       'Total Discharges': parseInt(item.totalDischarges, 10),
-      'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString()}`,
-      'Average Total Payments': `$${item.averageTotalPayments.toLocaleString()}`,
-      'Average Medicare Payments': `$${item.averageMedicarePayments.toLocaleString()}`
+      'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString(
+        undefined,
+        { minimumFractionDigits: 2 }
+      )}`,
+      'Average Total Payments': `$${item.averageTotalPayments.toLocaleString(
+        undefined,
+        { minimumFractionDigits: 2 }
+      )}`,
+      'Average Medicare Payments': `$${item.averageMedicarePayments.toLocaleString(
+        undefined,
+        { minimumFractionDigits: 2 }
+      )}`
     };
   });
 
