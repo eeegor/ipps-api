@@ -1,5 +1,5 @@
 import { Provider } from './Provider';
-import { queryNumberMinMax, queryString } from '../util';
+import { logger, redis, queryNumberMinMax, queryString } from '../util';
 import { authenticate } from '../middleware';
 
 export const pageNumber = req => {
@@ -83,33 +83,40 @@ export const requestParams = req => ({
   ...queryString('providerState', req.query.state)
 });
 
-export const setRedis = (req, res, redis, providers) => {
-  redis.setex(
-    req.originalUrl,
-    // istanbul ignore next
-    process.env.REDIS_TTL || 3600,
-    JSON.stringify(transformResponse(providers)),
-    // istanbul ignore next
-    redisSetError => {
-      if (redisSetError || !providers || providers === null) {
-        return res.status(404).json({
-          info: 'Redis data could not be saved',
-          error: redisSetError
-        });
-      }
-      return true;
-    }
-  );
+export const setRedis = (req, res, providers) => {
+  redis
+    .then(redisDb => {
+      redisDb.setex(
+        req.originalUrl,
+        // istanbul ignore next
+        process.env.REDIS_TTL || 3600,
+        JSON.stringify(transformResponse(providers)),
+        // istanbul ignore next
+        redisSetError => {
+          if (redisSetError || !providers || providers === null) {
+            return res.status(404).json({
+              info: 'Redis data could not be saved',
+              error: redisSetError
+            });
+          }
+          return true;
+        }
+      );
+    })
+    .catch(
+      // istanbul ignore next
+      error => logger.log('info', error)
+    );
 };
 
-export const getFromMongo = (req, res, redis) => {
+export const getFromMongo = (req, res) => {
   Provider.find(requestParams(req), { _id: 0 }, paginationQuery(req))
     .lean()
     .then(
       providers => {
         if (providers && providers.length > 0) {
           if (needsCache(req) === true) {
-            setRedis(req, res, redis, providers);
+            setRedis(req, res, providers);
           }
           setResponseHeadersDbEngine(res, 'mongo');
           return res.status(200).json(transformResponse(providers));
@@ -125,19 +132,34 @@ export const getFromMongo = (req, res, redis) => {
     );
 };
 
-export const getFromRedis = (req, res, redis) => {
-  redis.get(req.originalUrl, (error, cached) => {
-    if (error || !cached || cached === null) {
-      return getFromMongo(req, res, redis);
-    }
-    setResponseHeadersDbEngine(res, 'redis');
-    return res.status(200).json(JSON.parse(cached));
-  });
+export const getFromRedis = (req, res) => {
+  redis
+    .then(redisDb => {
+      redisDb.get(req.originalUrl, (error, cached) => {
+        if (error || !cached || cached === null) {
+          return getFromMongo(req, res);
+        }
+        setResponseHeadersDbEngine(res, 'redis');
+        return res.status(200).json(JSON.parse(cached));
+      });
+    })
+    .catch(
+      // istanbul ignore next
+      error => logger.log('info', error)
+    );
 };
 
 export const paginationHeaders = (req, res, next) => {
   res.setHeader('x-current-page', responsePagination(req).page);
   res.setHeader('x-current-page-limit', responsePagination(req).perPage);
+  Provider.find(requestParams(req), { _id: 0 }, {}).countDocuments(
+    (error, count) => {
+      // istanbul ignore next
+      if (!error) {
+        res.setHeader('x-current-count', count);
+      }
+    }
+  );
   Provider.countDocuments((error, count) => {
     // istanbul ignore next
     if (!error) {
@@ -147,12 +169,10 @@ export const paginationHeaders = (req, res, next) => {
   });
 };
 
-export const ProviderController = (app, redis) => {
+export const ProviderController = app => {
   app.use(paginationHeaders);
   app.get('/providers', authenticate, (req, res) =>
-    needsCache(req) === false
-      ? getFromMongo(req, res, redis)
-      : getFromRedis(req, res, redis)
+    needsCache(req) === false ? getFromMongo(req, res) : getFromRedis(req, res)
   );
 };
 

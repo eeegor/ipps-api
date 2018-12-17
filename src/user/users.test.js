@@ -50,7 +50,7 @@ describe('POST /signup', () => {
   });
 
   it('should not create user if email exists', done => {
-    const email = goodUser.email;
+    const { email } = goodUser;
 
     request(app)
       .post('/signup')

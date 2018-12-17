@@ -2,9 +2,15 @@ import { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { User, USERS_SECRET } from '../../user/User';
 import { Provider } from '../../provider/Provider';
-import { redis } from '../../index';
+import { redis, logger } from '../../util';
 
-export const flushRedis = () => redis.flushdb();
+export const flushRedis = () =>
+  redis
+    .then(db => {
+      // logger.log('info', 'redis:flush:success');
+      db.flushdb();
+    })
+    .catch(error => logger.log('info', error));
 
 const goodUserId = new Types.ObjectId();
 const badUserId = new Types.ObjectId();
@@ -36,9 +42,9 @@ export const badUser = users[1];
 const populateUsers = done => {
   User.deleteMany()
     .then(() => {
-      const goodUserId = new User(users[0]).save();
-      const badUserId = new User(users[1]).save();
-      return Promise.all([goodUserId, badUserId]);
+      const nextGoodUser = new User(users[0]).save();
+      const nextBadUser = new User(users[1]).save();
+      return Promise.all([nextGoodUser, nextBadUser]);
     })
     .then(() => done());
 };

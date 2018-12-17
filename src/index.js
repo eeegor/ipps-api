@@ -1,12 +1,19 @@
 require('dotenv').config();
+
+/* eslint-disable import/first */
+import mongoose from 'mongoose';
 import express from 'express';
 import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import initRedis from 'redis';
 import cors from 'cors';
 import compression from 'compression';
 import user from './user/UserController';
 import provider from './provider/ProviderController';
+import { logger } from './util';
+
+/**
+ *
+ * Environment
+ */
 
 // istanbul ignore next
 const env = process.env.NODE_ENV || 'development';
@@ -17,12 +24,13 @@ const port =
 
 // *** 1/2 RUN WITH TEST ENV ***
 // Uncomment this if you want to serve the test database for debugging
+// This will allow you to access the real test data in the database
+// Please follow STEP 2 below
 // const port =
 //   env === 'test' || env === 'development'
 //     ? process.env.PORT_TEST || 50023
 //     : process.env.PORT || 5000;
 
-console.log('***** env *****', env);
 /* istanbul ignore next */
 if (env === 'development' || env === 'production') {
   // *** 2/2 RUN WITH TEST ENV ***
@@ -33,55 +41,81 @@ if (env === 'development' || env === 'production') {
   // process.env.REDIS_HOST = process.env.REDIS_HOST_TEST;
   // process.env.REDIS_AUTH_PASS = process.env.REDIS_AUTH_PASS_TEST;
   // process.env.REDIS_TTL = process.env.REDIS_TTL_TEST;
-  console.log('Using DB:', process.env.MONGO_DB);
-  console.log(
-    'Using REDIS:',
-    `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+  logger.log('info', `Using DB: ${process.env.MONGO_DB}`);
+  logger.log(
+    'info',
+    `Using REDIS: ${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
   );
 } else if (env === 'test') {
-  console.log('** SWITCH ENV FOR TEST ***');
+  logger.log('info', '** SWITCH ENV FOR TEST ***');
   process.env.PORT = process.env.PORT_TEST || 50023;
   process.env.MONGO_DB = process.env.MONGO_DB_TEST;
   process.env.REDIS_PORT = process.env.REDIS_PORT_TEST;
   process.env.REDIS_HOST = process.env.REDIS_HOST_TEST;
   process.env.REDIS_AUTH_PASS = process.env.REDIS_AUTH_PASS_TEST;
   process.env.REDIS_TTL = process.env.REDIS_TTL_TEST;
-  console.log('Using DB:', process.env.MONGO_DB);
-  console.log(
-    'Using REDIS:',
-    `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+  logger.log('info', `Using DB: ${process.env.MONGO_DB}`);
+  logger.log(
+    'info',
+    `Using REDIS: ${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
   );
 }
-console.log('Using PORT:', process.env.PORT);
+logger.log('info', `***** env: ${env} *****`);
+logger.log('info', `Using PORT: ${process.env.PORT}`);
+
+/**
+ *
+ * App
+ */
+
+const app = express();
+
+/**
+ *
+ * Body Parser
+ */
+
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+
+/**
+ *
+ * Cors
+ */
 
 // istanbul ignore next
 const whitelist =
   process.env.CORS_WHITELIST.split(',').map(entry => {
     const trimmed = entry.trim();
-    if (entry.match('localhost' | '127.0.0.1')) {
-      const port = entry.split(':').map(p => p.trim())[1];
+    if (entry.match('localhost') || entry.match('127.0.0.1')) {
+      const corsPort = entry.split(':').map(p => p.trim())[1];
       return [
-        `127.0.0.1:${port}`,
-        `http://127.0.0.1:${port}`,
-        `https://127.0.0.1:${port}`,
-        `localhost:${port}`,
-        `http://localhost:${port}`,
-        `https://localhost:${port}`
+        `127.0.0.1:${corsPort}`,
+        `http://127.0.0.1:${corsPort}`,
+        `https://127.0.0.1:${corsPort}`,
+        `localhost:${corsPort}`,
+        `http://localhost:${corsPort}`,
+        `https://localhost:${corsPort}`
       ];
     }
     return [`${trimmed}`, `http://${trimmed}`, `https://${trimmed}`];
   }) || [];
 
 const exposedCorsHeaders =
-  'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-total-count';
+  'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-current-count, x-total-count';
 
 // istanbul ignore next
 const corsOptions = {
   origin: (origin, callback) => {
-    const extendedWhitelist = [].concat.apply([], whitelist);
+    const extendedWhitelist = [].concat([], ...whitelist);
     // uncomment to debug cors in production
-    // console.log('*** ORIGIN ***', origin);
-    // console.log('*** WHITELIST ***', extendedWhitelist.join(', '))
+    // logger.log('info', `*** origin: ${origin} ***`);
+    // logger.log('info', `*** whitelist ***`)
+    // logger.log('info', extendedWhitelist.join(', '))
     if (extendedWhitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -91,15 +125,14 @@ const corsOptions = {
   exposedHeaders: exposedCorsHeaders
 };
 
-const app = express();
-
 /* istanbul ignore else if */
-if (env !== 'test' || env !== 'development') {
-  app.use((req, res, next) => {
-    req.headers.origin = req.headers.origin || req.headers.host;
-    next();
-  });
-} else if (env === 'test') {
+app.use((req, res, next) => {
+  req.headers.origin = req.headers.origin || req.headers.host;
+  next();
+});
+
+// istanbul ignore next
+if (env === 'test') {
   app.use((req, res, next) => {
     req.headers.origin = `localhost:${process.env.PORT_TEST || 50023}`;
     next();
@@ -109,6 +142,11 @@ if (env !== 'test' || env !== 'development') {
 app.use(cors(corsOptions));
 app.options('*', cors());
 
+/**
+ *
+ * Compression
+ */
+
 // istanbul ignore next
 app.use(
   compression({
@@ -117,40 +155,58 @@ app.use(
   })
 );
 
-mongoose.Promise = global.Promise;
-mongoose.set('useCreateIndex', true);
-mongoose.connect(
-  process.env.MONGO_DB,
-  {
-    useNewUrlParser: true
-  }
-);
+/**
+ *
+ * Mongo DB
+ */
 
-export const redis = initRedis.createClient(
-  process.env.REDIS_PORT,
-  process.env.REDIS_HOST,
-  {
-    auth_pass: process.env.REDIS_AUTH_PASS
-  }
-);
+// istanbul ignore next
+export const mongo = new Promise((resolve, reject) => {
+  mongoose.Promise = global.Promise;
+  mongoose.set('useCreateIndex', true);
+  mongoose
+    .connect(
+      process.env.MONGO_DB,
+      {
+        useNewUrlParser: true
+      }
+    )
+    .catch(error => reject(error));
+  resolve();
+});
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+mongo
+  .then(() => logger.log('info', 'mongo:connection:success'))
+  .catch(
+    // istanbul ignore next
+    error => logger.log('info', 'mongo:connection:error', error)
+  );
+
+/**
+ *
+ * Root Route aka Welcome Page
+ */
 
 app.get('/', (req, res) => {
   res.send('Ipps Patients Data Api');
 });
 
-export const users = user(app, redis);
-export const providers = provider(app, redis);
+/**
+ *
+ * Resources
+ */
+
+export const users = user(app);
+export const providers = provider(app);
+
+/**
+ *
+ * Server
+ */
 
 const server = app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server url: http://127.0.0.1:${port}`);
+  logger.log('info', `*** app ***`);
+  logger.log('info', `listening on: http://127.0.0.1:${port}`);
 });
 
 export default server;

@@ -111,11 +111,11 @@ describe('GET /providers', () => {
       .expect(res => {
         expect(res.body.length).toBe(4);
       })
-      .end(err => {
-        if (err) {
-          return done(err);
+      .end(error => {
+        if (error) {
+          return done(error);
         }
-        request(app)
+        return request(app)
           .get('/providers')
           .query({
             state: 'TX'
@@ -126,7 +126,7 @@ describe('GET /providers', () => {
             expect(res.body.length).toBe(4);
             expect(res.headers['x-db-engine']).toBe('redis');
           })
-          .end(err => done(err));
+          .end(error => done(error));
       });
   });
 
