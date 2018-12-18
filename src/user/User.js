@@ -77,11 +77,10 @@ UserSchema.statics.findByEmailPassword = function findByEmailPassword(
 
 UserSchema.methods.toJSON = function toJSON() {
   const user = this;
-  const userObject = user.toObject();
+  const record = user.toObject();
   return {
-    id: userObject._id,
-    email: userObject.email,
-    password: userObject.password
+    id: record._id,
+    email: record.email
   };
 };
 
