@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon --watch src --exec \"babel-node src\"",
     "build": "babel src --out-dir dist",
-    "prebuild": "yarn format",
+    "prebuild": "rm -rf dist && yarn format",
     "prestart": "yarn -s build",
     "start": "NODE_ENV=production pm2 start dist",
     "lint": "eslint src && prettier --list-different \"src/**/*.js\"",
