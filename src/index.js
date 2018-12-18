@@ -31,7 +31,7 @@ const port =
 //     ? process.env.PORT_TEST || 50023
 //     : process.env.PORT || 5000;
 
-/* istanbul ignore next */
+// istanbul ignore next
 if (env === 'development' || env === 'production') {
   // *** 2/2 RUN WITH TEST ENV ***
   // Uncomment this if you want to serve the test database for debugging
@@ -103,7 +103,7 @@ const whitelist =
       ];
     }
     return [`${trimmed}`, `http://${trimmed}`, `https://${trimmed}`];
-  }) || [];
+  }).concat([], ...whitelist) || [];
 
 const exposedCorsHeaders =
   'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-current-count, x-total-count';
@@ -111,12 +111,11 @@ const exposedCorsHeaders =
 // istanbul ignore next
 const corsOptions = {
   origin: (origin, callback) => {
-    const extendedWhitelist = [].concat([], ...whitelist);
     // uncomment to debug cors in production
     // logger.log('info', `*** origin: ${origin} ***`);
     // logger.log('info', `*** whitelist ***`)
     // logger.log('info', extendedWhitelist.join(', '))
-    if (extendedWhitelist.indexOf(origin) !== -1) {
+    if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -125,7 +124,7 @@ const corsOptions = {
   exposedHeaders: exposedCorsHeaders
 };
 
-/* istanbul ignore else if */
+// istanbul ignore else if 
 app.use((req, res, next) => {
   req.headers.origin = req.headers.origin || req.headers.host;
   next();
