@@ -117,17 +117,21 @@ export const getFromRedis = (req, res) => {
     );
 };
 
-export const paginationHeaders = (req, res, next) => {
-  res.setHeader('x-current-page', responsePagination(req).page);
-  res.setHeader('x-current-page-limit', responsePagination(req).perPage);
+export const requestCount = (req, res, next) => {
   Provider.find(requestParams(req), { _id: 0 }, {}).countDocuments(
     (error, count) => {
       // istanbul ignore next
       if (!error) {
-        res.setHeader('x-current-count', count);
+        res.setHeader('x-current-count', parseInt(count, 10) || 0);
       }
+      next();
     }
   );
+};
+
+export const paginationHeaders = (req, res, next) => {
+  res.setHeader('x-current-page', responsePagination(req).page);
+  res.setHeader('x-current-page-limit', responsePagination(req).perPage);
   Provider.countDocuments((error, count) => {
     // istanbul ignore next
     if (!error) {
@@ -139,6 +143,7 @@ export const paginationHeaders = (req, res, next) => {
 
 export const ProviderController = app => {
   app.use(paginationHeaders);
+  app.use(requestCount);
   app.get('/providers', authenticate, (req, res) =>
     needsCache(req) === false ? getFromMongo(req, res) : getFromRedis(req, res)
   );
