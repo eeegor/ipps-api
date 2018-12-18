@@ -88,7 +88,7 @@ app.use(
  */
 
 // istanbul ignore next
-const whitelist =
+const whitelistEntries =
   process.env.CORS_WHITELIST.split(',').map(entry => {
     const trimmed = entry.trim();
     if (entry.match('localhost') || entry.match('127.0.0.1')) {
@@ -103,7 +103,8 @@ const whitelist =
       ];
     }
     return [`${trimmed}`, `http://${trimmed}`, `https://${trimmed}`];
-  }).concat([], ...whitelist) || [];
+  }) || [];
+const whitelist = [].concat([], ...whitelistEntries);
 
 const exposedCorsHeaders =
   'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-current-count, x-total-count';
@@ -124,7 +125,7 @@ const corsOptions = {
   exposedHeaders: exposedCorsHeaders
 };
 
-// istanbul ignore else if 
+// istanbul ignore else if
 app.use((req, res, next) => {
   req.headers.origin = req.headers.origin || req.headers.host;
   next();
