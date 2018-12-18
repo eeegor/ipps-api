@@ -65,15 +65,17 @@ describe('GET /providers', () => {
     request(app)
       .get('/providers')
       .query({
-        cache: false
+        cache: false,
+        state: 'TX'
       })
       .set('x-auth', goodUser.tokens[0].token)
       .expect(200)
       .expect(res => {
-        expect(res.body.length).toBe(providers.length);
+        expect(res.body.length).toBe(4);
         expect(parseInt(res.headers['x-total-count'], 10)).toBe(
           providers.length
         );
+        expect(parseInt(res.headers['x-current-count'], 10)).toBe(4);
       })
       .end(error => done(error && error));
   });
