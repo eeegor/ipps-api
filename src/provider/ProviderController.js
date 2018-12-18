@@ -34,36 +34,6 @@ export const setResponseHeadersDbEngine = (res, engine) => {
   res.setHeader('x-db-engine', engine);
 };
 
-export const transformResponse = providers =>
-  providers &&
-  providers.length > 0 &&
-  providers.map(item => {
-    const hospitalDesc = item.hospitalReferralRegionDescription.split(' - ');
-    return {
-      'Provider Name': item.providerName.toUpperCase(),
-      'Provider Street Address': item.providerStreetAddress.toUpperCase(),
-      'Provider City': item.providerCity.toUpperCase(),
-      'Provider State': item.providerState.toUpperCase(),
-      'Provider Zip Code': parseInt(item.providerZipCode, 10),
-      'Hospital Referral Region Description': `${hospitalDesc[0].toUpperCase()} - ${
-        hospitalDesc[1]
-      }`,
-      'Total Discharges': parseInt(item.totalDischarges, 10),
-      'Average Covered Charges': `$${item.averageCoveredCharges.toLocaleString(
-        undefined,
-        { minimumFractionDigits: 2 }
-      )}`,
-      'Average Total Payments': `$${item.averageTotalPayments.toLocaleString(
-        undefined,
-        { minimumFractionDigits: 2 }
-      )}`,
-      'Average Medicare Payments': `$${item.averageMedicarePayments.toLocaleString(
-        undefined,
-        { minimumFractionDigits: 2 }
-      )}`
-    };
-  });
-
 export const requestParams = req => ({
   ...queryNumberMinMax(
     'totalDischarges',
@@ -90,7 +60,7 @@ export const setRedis = (req, res, providers) => {
         req.originalUrl,
         // istanbul ignore next
         process.env.REDIS_TTL || 3600,
-        JSON.stringify(transformResponse(providers)),
+        JSON.stringify(providers),
         // istanbul ignore next
         redisSetError => {
           if (redisSetError || !providers || providers === null) {
@@ -110,16 +80,16 @@ export const setRedis = (req, res, providers) => {
 };
 
 export const getFromMongo = (req, res) => {
-  Provider.find(requestParams(req), { _id: 0 }, paginationQuery(req))
-    .lean()
+  Provider.find(requestParams(req), {}, paginationQuery(req))
     .then(
       providers => {
+        console.log('providers', providers)
         if (providers && providers.length > 0) {
           if (needsCache(req) === true) {
             setRedis(req, res, providers);
           }
           setResponseHeadersDbEngine(res, 'mongo');
-          return res.status(200).json(transformResponse(providers));
+          return res.status(200).json(providers);
         }
         return res.status(200).json([]);
       },
