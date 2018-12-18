@@ -80,26 +80,24 @@ export const setRedis = (req, res, providers) => {
 };
 
 export const getFromMongo = (req, res) => {
-  Provider.find(requestParams(req), {}, paginationQuery(req))
-    .then(
-      providers => {
-        console.log('providers', providers)
-        if (providers && providers.length > 0) {
-          if (needsCache(req) === true) {
-            setRedis(req, res, providers);
-          }
-          setResponseHeadersDbEngine(res, 'mongo');
-          return res.status(200).json(providers);
+  Provider.find(requestParams(req), {}, paginationQuery(req)).then(
+    providers => {
+      if (providers && providers.length > 0) {
+        if (needsCache(req) === true) {
+          setRedis(req, res, providers);
         }
-        return res.status(200).json([]);
-      },
-      // istanbul ignore next
-      error =>
-        res.json({
-          info: "Can't get providers",
-          error
-        })
-    );
+        setResponseHeadersDbEngine(res, 'mongo');
+        return res.status(200).json(providers);
+      }
+      return res.status(200).json([]);
+    },
+    // istanbul ignore next
+    error =>
+      res.json({
+        info: "Can't get providers",
+        error
+      })
+  );
 };
 
 export const getFromRedis = (req, res) => {

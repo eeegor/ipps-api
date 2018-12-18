@@ -40,7 +40,6 @@ ProviderSchema.methods.toJSON = function toJSON() {
       undefined,
       { minimumFractionDigits: 2 }
     )}`
-
   };
 };
 
