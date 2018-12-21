@@ -89,6 +89,8 @@ yarn deploy
 
 ### Endpoints:
 
+> Info: - [Postman](https://www.getpostman.com) is the recommended tool to explore the api
+
 *\* required*
 
 **`GET /`**
@@ -118,14 +120,14 @@ yarn deploy
 |Param|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
-|**body** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
+|**`body`** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
 
 **`POST /login`**
 
 |Param|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
-|**body** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
+|**`body`** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
 
 **`POST /logout`**
 
