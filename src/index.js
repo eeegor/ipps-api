@@ -221,10 +221,6 @@ app.get('/', (req, res) => {
           method: 'GET',
           headers: {
             'x-auth': 'string'
-          },
-          body: {
-            email: 'string',
-            password: 'string'
           }
         },
         providers: {
