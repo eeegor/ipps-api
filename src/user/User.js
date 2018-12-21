@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    minLength: 3,
+    minlength: 3,
     trim: true,
     unique: true,
     validate: {
@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minLength: 6
+    minlength: 6
   },
   tokens: [
     {
