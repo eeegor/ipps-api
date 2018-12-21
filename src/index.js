@@ -230,25 +230,7 @@ app.get('/', (req, res) => {
         providers: {
           method: 'GET',
           headers: {
-            'x-auth': 'string',
-            'x-total-count': 'number',
-            'x-current-count': 'number',
-            'x-current-page': 'number',
-            'x-current-page-limit': 'number',
-            'x-available-states': 'string[]',
-            'x-db-engine': 'mongo|redis'
-          },
-          params: {
-            min_discharges: 'number',
-            max_discharges: 'number',
-            min_average_covered_charges: 'number',
-            max_average_covered_charges: 'number',
-            min_average_medicare_payments: 'number',
-            max_average_medicare_payments: 'number',
-            state: 'string',
-            page: 'number',
-            per_page: 'number',
-            cache: 'boolean'
+            'x-auth': 'string'
           }
         }
       }
