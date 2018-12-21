@@ -236,7 +236,7 @@ app.get('/', (req, res) => {
             'x-current-page': 'number',
             'x-current-page-limit': 'number',
             'x-available-states': 'string[]',
-            'x-db-engine': 'mongo|redis',
+            'x-db-engine': 'mongo|redis'
           },
           params: {
             min_discharges: 'number',
@@ -250,7 +250,7 @@ app.get('/', (req, res) => {
             per_page: 'number',
             cache: 'boolean'
           }
-        },
+        }
       }
     }
   });
