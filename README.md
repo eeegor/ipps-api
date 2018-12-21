@@ -5,6 +5,27 @@ This is an example [Express](https://expressjs.com/) rest api which serves IPPS 
 - You can find a hosted version of the api here [https://ipps-api.now.sh](https://ipps-api.now.sh)
 - You can find a hosted version of a compatible client here [https://ipps.now.sh](https://ipps.now.sh)
 
+## :gear: Configuration
+
+Modify configuration in `.env` (start by renaming `env.example` to `.env`, [wondering why?](https://codeburst.io/process-env-what-it-is-and-why-when-how-to-use-it-effectively-505d0b2831e7))
+
+Below the most important settings to get you started
+```bash
+# e.g. https://ipps-api.now.sh
+MONGO_DB=mongodb-connection-string
+MONGO_DB_TEST=mongodb-test-connection-string
+
+REDIS_PORT=redis-port
+REDIS_HOST=redis-host
+REDIS_AUTH_PASS=redis-password
+
+REDIS_PORT_TEST=6379
+REDIS_HOST_TEST=localhost
+REDIS_AUTH_PASS_TEST=
+REDIS_TTL_TEST=2592000
+
+CORS_WHITELIST="localhost:3000, 127.0.0.1:5000, 127.0.0.1:50023, https://your-custom-url.com"
+```
 
 ## :rocket: Getting started
 
@@ -87,7 +108,7 @@ Finally now you're ready to:
 yarn deploy
 ```
 
-### Endpoints:
+### :checkered_flag: Endpoints:
 
 > Info: - [Postman](https://www.getpostman.com) is the recommended tool to explore the api
 
@@ -142,7 +163,7 @@ yarn deploy
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
 
 
-## Tools, Libraries and Packages
+## :green_book: Tools, Libraries and Packages
 
 ### Express
 
