@@ -14,7 +14,6 @@ const UserController = app => {
         res.status(201).send(user);
       })
       .catch(error => {
-        console.log(error);
         const nextMessage =
           error.code === 11000
             ? 'User exists. Is it you? Please login'
@@ -46,7 +45,6 @@ const UserController = app => {
           );
       })
       .catch(error => {
-        console.log(error);
         res.status(400).send({ message: 'Auth Error', error });
       });
   });
