@@ -13,6 +13,17 @@ const ProviderSchema = new mongoose.Schema({
   averageMedicarePayments: Number
 });
 
+ProviderSchema.statics.getAllStates = function getAllStates() {
+  const Provider = this;
+  return Provider.distinct('providerState').then(states => {
+    // istanbul ignore if
+    if (!states) {
+      return Promise.reject('No provider states found...');
+    }
+    return states;
+  });
+};
+
 ProviderSchema.methods.toJSON = function toJSON() {
   const provider = this;
   const record = provider.toObject();

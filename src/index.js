@@ -107,7 +107,7 @@ const whitelistEntries =
 const whitelist = [].concat([], ...whitelistEntries);
 
 const exposedCorsHeaders =
-  'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-current-count, x-total-count';
+  'x-auth, x-db-engine, x-current-page, x-current-page-limit, x-current-count, x-total-count, x-available-states';
 
 // istanbul ignore next
 const corsOptions = {

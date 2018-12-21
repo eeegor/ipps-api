@@ -117,6 +117,21 @@ export const getFromRedis = (req, res) => {
     );
 };
 
+export const removeUnwantedHeaders = ({ res, next }) => {
+  res.removeHeader('x-powered-by');
+  next();
+};
+
+export const allStates = ({ res, next }) => {
+  Provider.getAllStates().then(states => {
+    // istanbul ignore next
+    if (states && states.length > 0) {
+      res.setHeader('x-available-states', JSON.stringify(states));
+    }
+    next();
+  });
+};
+
 export const requestCount = (req, res, next) => {
   Provider.find(requestParams(req), { _id: 0 }, {}).countDocuments(
     (error, count) => {
@@ -142,8 +157,10 @@ export const paginationHeaders = (req, res, next) => {
 };
 
 export const ProviderController = app => {
+  app.use(removeUnwantedHeaders);
   app.use(paginationHeaders);
   app.use(requestCount);
+  app.use(allStates);
   app.get('/providers', authenticate, (req, res) =>
     needsCache(req) === false ? getFromMongo(req, res) : getFromRedis(req, res)
   );

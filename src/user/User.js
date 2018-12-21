@@ -69,7 +69,7 @@ UserSchema.statics.findByEmailPassword = function findByEmailPassword(
         if (success) {
           resolve(user);
         }
-        reject('The credentials are not valid');
+        reject({message: 'The credentials are not valid'});
       });
     });
   });
