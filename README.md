@@ -11,7 +11,6 @@ Modify configuration in `.env` (start by renaming `env.example` to `.env`, [wond
 
 Below the most important settings to get you started
 ```bash
-# e.g. https://ipps-api.now.sh
 MONGO_DB=mongodb-connection-string
 MONGO_DB_TEST=mongodb-test-connection-string
 
@@ -27,9 +26,73 @@ REDIS_TTL_TEST=2592000
 CORS_WHITELIST="localhost:3000, 127.0.0.1:5000, 127.0.0.1:50023, https://your-custom-url.com"
 ```
 
-## :rocket: Getting started
+## :books: Database and Data
 
-After you have cloned the repository to your computer please run the following commands inside the project folder:
+[`MongoDB`](https://www.mongodb.com/) is used as the primary database. 
+
+> Info: You will need to start `MongoDB` locally or use some web-service e.g. [mLab](https://mlab.com/). Read how to get started [here](https://redis.io/topics/rediscli)
+
+```bash
+# running
+mongod
+
+# should print something like
+.... NETWORK  [initandlisten] waiting for connections on port 27017
+```
+
+[`Redis`](http://redis.js.org/) is used in the background to cache the responses and serve them quicker to following user. 
+
+> Info: You will need to start `Redis` locally or use some web-service e.g. [RedisLabs](https://redislabs.com/). Read how to get started [here](https://docs.mlab.com/)
+
+```bash
+# running
+redis-cli
+
+# should print something like
+127.0.0.1:6379>
+```
+Now that the databases are running let's take care of the data
+
+The easiest way to get the [`CSV`](https://en.wikipedia.org/wiki/Comma-separated_values) dataset into Mongo is by using [`mongoimport`](https://docs.mongodb.com/manual/reference/program/mongoimport)
+
+Before importing, the data needs to be [`sanitized`](https://en.wikipedia.org/wiki/Sanitization_(classified_information)) to avoid bad values and convert string currency formats into mathematic friendly integers. Also to rename or remove specific columns
+
+Inside `/data-helpers` you will find
+- get-remote-csv.js
+  - helps to get remote csv from a url
+- transform-local-csv.js
+  - helps transform local `csv` to [`MongoDB`](https://www.mongodb.com/) friendly format
+
+You will need to configure inside `.env` 
+
+```bash
+DATA_PATH_ORIGIN=http://url-to-your-csv/filename.csv
+DATA_PATH_LOCAL=data/providers-master.csv
+DATA_PATH_TRANSFORMED=data/providers.csv
+```
+
+You can then use it in the [`console`](https://en.wikipedia.org/wiki/System_console) like this
+
+```bash
+yarn csv:get
+yarn csv:transform
+```
+
+After the transformation is complete, the cleaned data can be imported to [`MongoDB`](https://www.mongodb.com/)
+
+```bash
+# local
+mongoimport --db localhost:27017 --collection providers --type csv --headerline --file data/providers.csv --drop
+
+# remote
+mongoimport -h {db-host:port} -d {db-name} -c providers -u {user} -p {password} --file data/providers.csv --drop --type csv --headerline
+```
+
+Voila! All data is now inside the database and the App is ready to reflect
+
+## :rocket: Running the App
+
+After you have cloned the repository to your computer configured the `.env` file and setup the databases, please run the following commands inside the project folder:
 
 ```bash
 # install dependencies
