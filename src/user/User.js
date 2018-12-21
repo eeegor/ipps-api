@@ -43,7 +43,7 @@ UserSchema.statics.findByToken = function findByToken(token) {
   try {
     decoded = jwt.verify(token, USERS_SECRET);
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject({message: 'Auth Error', error});
   }
   const result = User.findOne({
     _id: decoded._id,
@@ -61,7 +61,7 @@ UserSchema.statics.findByEmailPassword = function findByEmailPassword(
 
   return User.findOne({ email }).then(user => {
     if (!user) {
-      return Promise.reject('No user found...');
+      return Promise.reject({ message: 'No user found. Want to sign up?'});
     }
 
     return new Promise((resolve, reject) => {
@@ -117,12 +117,12 @@ UserSchema.pre('save', function preSave(next) {
     bcrypt.genSalt(10, (saltError, salt) => {
       // istanbul ignore if
       if (saltError) {
-        Promise.reject(saltError);
+        Promise.reject({ message: 'Auth Error', saltError});
       }
       bcrypt.hash(user.password, salt, (hashError, hash) => {
         // istanbul ignore if
         if (hashError) {
-          Promise.reject(hashError);
+          Promise.reject({ message: 'Auth Error', hashError});
         }
         user.password = hash;
         next();

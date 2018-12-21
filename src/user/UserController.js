@@ -14,7 +14,9 @@ const UserController = app => {
         res.status(201).send(user);
       })
       .catch(error => {
-        res.status(400).send(error);
+        console.log(error)
+        const nextMessage = error.code === 11000 ? 'User exists. Is it you? Please login' : error.message;
+        res.status(400).send({message: 'Auth Error', error: {message: nextMessage}});
       });
   });
 
@@ -39,7 +41,8 @@ const UserController = app => {
           );
       })
       .catch(error => {
-        res.status(400).send(error);
+        console.log(error)
+        res.status(400).send({message: 'Auth Error', error});
       });
   });
 
@@ -51,7 +54,7 @@ const UserController = app => {
         });
       },
       // istanbul ignore next
-      error => res.status(400).send(error)
+      error => res.status(400).send({message: 'Auth Error', error})
     );
   });
 

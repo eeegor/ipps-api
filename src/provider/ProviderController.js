@@ -65,7 +65,7 @@ export const setRedis = (req, res, providers) => {
         redisSetError => {
           if (redisSetError || !providers || providers === null) {
             return res.status(404).json({
-              info: 'Redis data could not be saved',
+              message: 'Redis data could not be saved',
               error: redisSetError
             });
           }
@@ -94,7 +94,7 @@ export const getFromMongo = (req, res) => {
     // istanbul ignore next
     error =>
       res.json({
-        info: "Can't get providers",
+        message: "Can't get providers",
         error
       })
   );
