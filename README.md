@@ -4,6 +4,7 @@ This is an example [Express](https://expressjs.com/) rest api which serves IPPS 
 
 - You can find a hosted version of the api here [https://ipps-api.now.sh](https://ipps-api.now.sh)
 - You can find a hosted version of a compatible client here [https://ipps.now.sh](https://ipps.now.sh)
+- [`React`](https://reactjs.org) client code is [here](https://github.com/eeegor/ipps-client)
 
 ## :gear: Configuration
 
