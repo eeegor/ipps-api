@@ -1,8 +1,8 @@
-# Express IPPS Provider Api
+# Express IPPS Provider API
 
-This is an example [Express](https://expressjs.com/) rest api which serves IPPS Provider Data in JSON format to authenticated users
+This is an example [Express](https://expressjs.com/) rest API which serves IPPS Provider Data in JSON format to authenticated users
 
-- You can find a hosted version of the api here [https://ipps-api.now.sh](https://ipps-api.now.sh)
+- You can find a hosted version of the API here [https://ipps-api.now.sh](https://ipps-api.now.sh)
 - You can find a hosted version of a compatible client here [https://ipps.now.sh](https://ipps.now.sh)
 - [`React`](https://reactjs.org) client code is [here](https://github.com/eeegor/ipps-client)
 
@@ -22,12 +22,13 @@ REDIS_AUTH_PASS=redis-password
 REDIS_PORT_TEST=6379
 REDIS_HOST_TEST=localhost
 REDIS_AUTH_PASS_TEST=
-REDIS_TTL_TEST=2592000
 
 CORS_WHITELIST="localhost:3000, 127.0.0.1:5000, 127.0.0.1:50023, https://your-custom-url.com"
 ```
 
 ## :books: Database and Data
+
+### Databases
 
 [`MongoDB`](https://www.mongodb.com/) is used as the primary database. 
 
@@ -41,7 +42,7 @@ mongod
 .... NETWORK  [initandlisten] waiting for connections on port 27017
 ```
 
-[`Redis`](http://redis.js.org/) is used in the background to cache the responses and serve them quicker to following user. 
+[`Redis`](http://redis.js.org/) is used in the background to cache the responses and serve them faster to the following users 
 
 > Info: You will need to start `Redis` locally or use some web-service e.g. [RedisLabs](https://redislabs.com/). Read how to get started [here](https://docs.mlab.com/)
 
@@ -52,34 +53,34 @@ redis-cli
 # should print something like
 127.0.0.1:6379>
 ```
+### Data
+
 Now that the databases are running let's take care of the data
 
 The easiest way to get the [`CSV`](https://en.wikipedia.org/wiki/Comma-separated_values) dataset into Mongo is by using [`mongoimport`](https://docs.mongodb.com/manual/reference/program/mongoimport)
 
-Before importing, the data needs to be [`sanitized`](https://en.wikipedia.org/wiki/Sanitization_(classified_information)) to avoid bad values and convert string currency formats into mathematic friendly integers. Also to rename or remove specific columns
+Before importing, the data needs to be [`sanitized`](https://en.wikipedia.org/wiki/Sanitization_(classified_information)) to avoid bad values, convert string currency formats into mathematic friendly integers and to rename or remove specific columns
 
 Inside `/data-helpers` you will find
 - get-remote-csv.js
-  - helps to get remote csv from a url
+  - helps to get remote csv from an URL
 - transform-local-csv.js
   - helps transform local `csv` to [`MongoDB`](https://www.mongodb.com/) friendly format
 
-You will need to configure inside `.env` 
+You will need to configure the following path inside `.env` 
 
 ```bash
 DATA_PATH_ORIGIN=http://url-to-your-csv/filename.csv
-DATA_PATH_LOCAL=data/providers-master.csv
-DATA_PATH_TRANSFORMED=data/providers.csv
 ```
 
-You can then use it in the [`console`](https://en.wikipedia.org/wiki/System_console) like this
+After configuration, you can use the helpers in the [`console`](https://en.wikipedia.org/wiki/System_console) like this
 
 ```bash
 yarn csv:get
 yarn csv:transform
 ```
 
-After the transformation is complete, the cleaned data can be imported to [`MongoDB`](https://www.mongodb.com/)
+Once transformation is complete, the cleaned data can be imported to [`MongoDB`](https://www.mongodb.com/)
 
 ```bash
 # local
@@ -93,7 +94,7 @@ Voila! All data is now inside the database and the App is ready to reflect
 
 ## :rocket: Running the App
 
-After you have cloned the repository to your computer configured the `.env` file and setup the databases, please run the following commands inside the project folder:
+After previous steps, please run the following commands inside the project folder
 
 ```bash
 # install dependencies
@@ -105,7 +106,7 @@ yarn start
 
 ## :construction: Test
 
-To make sure the application works as expected you can run the test suite like this:
+To make sure the application works as expected you can run the test suite like this
 
 ```bash
 # runs all test files with coverage report
@@ -121,7 +122,7 @@ yarn test name-of-spec
 
 Prettier is a code formatter that ensures that all outputted code conforms to a consistent style
 
-Run the following command before each commit to make sure your changes are valid :nerd_face:
+Run the following command before each commit, making sure your changes are valid :nerd_face:
 
 Formats all `Js/Jsx`, `Json` and `Css, Scss` files according to `package.json / .prettierrc` presets
 
@@ -148,7 +149,7 @@ yarn lint
 
 ## :factory: Build
 
-If you wish to host this app, you will need to run the build command. After you've run the command, you will find the build artefacts in the `/dist` folder
+If you plan to host this app, you will need to run the build command. After you've run the command, you will find the build artifacts in the `/dist` folder
 
 ```bash
 # build static files
@@ -159,16 +160,16 @@ yarn build
 
 If you wish, you can deploy this app to Zeit.co. To do so please configure the following settings before you hit `yarn deploy` 
 
-> Info: It's also possible to host with any other providers (e.g. Heroku) which support `node.js`
+> Info: It's also possible to host with any other providers (e.g. Heroku) which support `node.js`, but you will need to configure them on your own :crying_cat_face:, or open up an [issue](https://github.com/eeegor/ipps-api/issues/new) to get help :smiley_cat:!
 
 1. Modify configuration in `.env` (start by renaming `env.example` to `.env`, [wondering why?](https://codeburst.io/process-env-what-it-is-and-why-when-how-to-use-it-effectively-505d0b2831e7))
 2. Modify configuration in `now.json` (start by renaming `example.now.json` to `now.json`
-3. Make sure you've configured the `CORS_WHITELIST`, or set it to `*` to allow client apps hosted on different domains to query your api
+3. Make sure you've configured the `CORS_WHITELIST`, or set it to `*` to allow client apps hosted on different domains to query your API
 
-Finally now you're ready to:
+Finally, now you're ready to:
 
 ```bash
-# deploy app to production
+# Deploy the app to production
 yarn deploy
 ```
 
@@ -183,6 +184,42 @@ yarn deploy
 |Param|Type|Example|
 |---|---|---|
 |---|---|---|
+
+**`POST /signup`**
+
+|Param|Type|Example|
+|---|---|---|
+|**`body`** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
+
+In case of success, you will find a valid `x-auth` token in the response headers
+
+|Header|Type|Example|
+|---|---|---|
+|**`x-auth`** | string|[JWT_TOKEN](https://jwt.io/)    |
+
+**`POST /login`**
+
+|Param|Type|Example|
+|---|---|---|
+|**`body`** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
+
+In case of success, you will find a valid `x-auth` token in the response headers
+
+|Header|Type|Example|
+|---|---|---|
+|**`x-auth`** | string|[JWT_TOKEN](https://jwt.io/)    |
+
+**`POST /logout`**
+
+|Param|Type|Example|
+|---|---|---|
+|**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)    |
+
+**`GET /profile`**
+
+|Param|Type|Example|
+|---|---|---|
+|**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)    |
 
 **`GET /providers`**
 
@@ -199,33 +236,6 @@ yarn deploy
 |`page` | number|1||
 |`per_page` | number|100||
 |`cache` | boolean|false||
-
-**`POST /signup`**
-
-|Param|Type|Example|
-|---|---|---|
-|**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
-|**`body`** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
-
-**`POST /login`**
-
-|Param|Type|Example|
-|---|---|---|
-|**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
-|**`body`** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
-
-**`POST /logout`**
-
-|Param|Type|Example|
-|---|---|---|
-|**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
-
-**`GET /profile`**
-
-|Param|Type|Example|
-|---|---|---|
-|**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
-
 
 ## :green_book: Tools, Libraries and Packages
 
@@ -254,7 +264,7 @@ Flexible document data model `nosql` database, find more infos [here](https://ww
 
 ### Redis
 
-Redis is an open source (BSD licensed), in-memory data structure store, in this case used as a cache broker. More infos [here](http://redis.js.org/)
+Redis is an open source (BSD licensed), in-memory data structure store, in this case, used as a cache broker. More info [here](http://redis.js.org/)
 
 ### Validator
 
@@ -268,7 +278,7 @@ More info [here](https://github.com/auth0/node-jsonwebtoken)
 
 ### Crypto
 
-JavaScript library of crypto standards, helps hashing and digesting hashed stuff
+JavaScript library of crypto standards helps to hash and to digest hashed values
 
 More info [here](https://github.com/brix/crypto-js)
 

@@ -188,7 +188,72 @@ mongo
  */
 
 app.get('/', (req, res) => {
-  res.send('Ipps Patients Data Api');
+  res.json({
+    name: 'Ipps Patients Data Api',
+    version: '0.1.0',
+    client: {
+      url: 'https://ipps.now.sh',
+      repo: 'https://github.com/eeegor/ipps-client'
+    },
+    api: {
+      url: 'https://ipps-api.now.sh',
+      repo: 'https://github.com/eeegor/ipps-api',
+      endpoints: {
+        signup: {
+          method: 'POST',
+          body: {
+            email: 'string',
+            password: 'string'
+          }
+        },
+        login: {
+          method: 'POST',
+          body: {
+            email: 'string',
+            password: 'string'
+          }
+        },
+        logout: {
+          method: 'DELETE',
+          body: {}
+        },
+        profile: {
+          method: 'GET',
+          headers: {
+            'x-auth': 'string'
+          },
+          body: {
+            email: 'string',
+            password: 'string'
+          }
+        },
+        providers: {
+          method: 'GET',
+          headers: {
+            'x-auth': 'string',
+            'x-total-count': 'number',
+            'x-current-count': 'number',
+            'x-current-page': 'number',
+            'x-current-page-limit': 'number',
+            'x-available-states': 'string[]',
+            'x-db-engine': 'mongo|redis',
+          },
+          params: {
+            min_discharges: 'number',
+            max_discharges: 'number',
+            min_average_covered_charges: 'number',
+            max_average_covered_charges: 'number',
+            min_average_medicare_payments: 'number',
+            max_average_medicare_payments: 'number',
+            state: 'string',
+            page: 'number',
+            per_page: 'number',
+            cache: 'boolean'
+          }
+        },
+      }
+    }
+  });
 });
 
 /**
