@@ -92,11 +92,13 @@ yarn deploy
 *\* required*
 
 **`GET /`**
+
 |Param|Type|Example|
 |---|---|---|
 |---|---|---|
 
 **`GET /providers`**
+
 |Params|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)|
@@ -112,23 +114,27 @@ yarn deploy
 |`cache` | boolean|false||
 
 **`POST /signup`**
+
 |Param|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
 |**body** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
 
 **`POST /login`**
+
 |Param|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
 |**body** *| object|```{ email: 'valid-email@example.com, password: 'any-one-you-choose'}```|
 
 **`POST /logout`**
+
 |Param|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
 
 **`GET /profile`**
+
 |Param|Type|Example|
 |---|---|---|
 |**`x-auth`** * | string|[JWT_TOKEN](https://jwt.io/)	|
